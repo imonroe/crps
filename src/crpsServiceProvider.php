@@ -1,7 +1,10 @@
 <?php
 
 namespace imonroe\crps;
-
+use imonroe\crps\Aspect;
+use imonroe\crps\AspectType;
+use imonroe\crps\Subject;
+use imonroe\crps\SubjectType;
 use Illuminate\Support\ServiceProvider;
 
 class crpsServiceProvider extends ServiceProvider
@@ -11,9 +14,20 @@ class crpsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-        //
+    public function boot(){
+		//parent::boot();
+		// Migrations:
+		//$this->loadMigrationsFrom(__DIR__.'/path/to/migrations');
+
+		// Views:
+		//$this->loadViewsFrom(__DIR__.'/path/to/views', 'courier');
+		//$this->publishes([
+		//	__DIR__.'/path/to/views' => resource_path('views/vendor/courier'),
+		//]);
+
+		// Routes:
+		$this->loadRoutesFrom(__DIR__.'/Http/routes.php');
+
     }
 
     /**
@@ -21,8 +35,7 @@ class crpsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
-        //
+    public function register(){
+
     }
 }

@@ -7,10 +7,11 @@ $request->session()->flash('error', 'Something went wrong!');
 
 
 namespace imonroe\crps\Http\Controllers;
+use App\Http\Controllers\Controller;
 use imonroe\crps\Http\Controllers\SearchController;
 use imonroe\crps\Subject;
 use imonroe\crps\SubjectType;
-useimonroe\crps\Aspect;
+use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
 use imonroe\crps\AspectFactory;
 use Illuminate\Http\Request;

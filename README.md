@@ -17,6 +17,36 @@ Via Composer
 $ composer require imonroe/crps
 ```
 
+In your /config/app.php file, add the following to the 'providers' array:
+``` php
+imonroe\crps\crpsServiceProvider::class,
+```
+You should also add the following class aliases:
+``` php
+'Aspect' => imonroe\crps\Aspect::class,
+'AspectType' => imonroe\crps\AspectType::class,
+'Subject' => imonroe\crps\Subject::class,
+'SubjectType' => imonroe\crps\SubjectType::class,
+'Ana' => imonroe\crps\Ana::class
+```
+
+Add the following line to the top of your /app/Console/Kernel.php file:
+``` php
+use imonroe\crps\Aspect;
+```
+Then, in the your schedule method, make it look like:
+``` php
+protected function schedule(Schedule $schedule){
+	$schedule->call(function () {
+		$aspects = Aspect::all();
+		foreach ($aspects as $aspect){
+			$aspect->parse();
+		}
+	})->name('parse_loop')->everyFiveMinutes()->withoutOverlapping();
+}
+```
+
+
 ## Usage
 
 ``` php
