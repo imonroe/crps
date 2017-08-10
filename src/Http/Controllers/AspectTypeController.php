@@ -1,5 +1,4 @@
 <?php
-
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -7,18 +6,14 @@ use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
 use Illuminate\Support\Facades\DB;
 
-
 class AspectTypeController extends Controller
 {
-
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index(){
         $types = AspectType::all();
 		return view('aspect_type.index', ['types' => $types, 'title' => 'Available Aspect Types']);
     }
@@ -43,18 +38,8 @@ class AspectTypeController extends Controller
 		$form .= '</p>';
 
 		$form .= '<p>';
-		$form .= \Form::label('flavor', 'Flavor: ');
-		$form .= \Form::text('subject_type');
-		$form .= '</p>';
-
-		$form .= '<p>';
 		$form .= \Form::label('is_viewable', 'Visible?: ');
 		$form .= \Form::checkbox('is_viewable', '1');
-		$form .= '</p>';
-
-		$form .= '<p>';
-		$form .= \Form::label('markdown', 'Markdown?: ');
-		$form .= \Form::checkbox('markdown', '1');
 		$form .= '</p>';
 
 		$form .= '<p>' . \Form::submit('Submit') . '</p>';
@@ -73,10 +58,8 @@ class AspectTypeController extends Controller
 		/*
 		id	int(10) unsigned Auto Increment	 
 		aspect_name	varchar(191)	 
-		aspect_description	text NULL	 
-		flavor	text NULL	 
-		is_viewable	int(11) NULL	 
-		markdown	int(11) NULL	 
+		aspect_description	text NULL	  
+		is_viewable	int(11) NULL
 		created_at	timestamp NULL	 
 		updated_at	timestamp NULL	 
 		*/
@@ -84,9 +67,7 @@ class AspectTypeController extends Controller
         $type = new AspectType;
 		$type->aspect_name = $request->input('aspect_name');
 		$type->aspect_description = $request->input('aspect_description');
-		$type->flavor = $request->input('flavor');
 		$type->is_viewable = $request->input('is_viewable');
-		$type->markdown = $request->input('markdown');
 		$type->save();
 		$write_new_class = $this->create_custom_aspect_class($type->id);
 		$message = 'Aspect Type saved.';
@@ -105,9 +86,7 @@ class AspectTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show($id){
 		$type = AspectType::find($id);
 		return view('aspect_type.show', ['type' => $type]);
     }
@@ -135,18 +114,8 @@ class AspectTypeController extends Controller
 		$form .= '</p>';
 
 		$form .= '<p>';
-		$form .= \Form::label('flavor', 'Flavor: ');
-		$form .= \Form::text('flavor', $type->flavor);
-		$form .= '</p>';
-
-		$form .= '<p>';
 		$form .= \Form::label('is_viewable', 'Visible?: ');
 		$form .= ($type->is_viewable = 1) ? \Form::checkbox('is_viewable', '1', true) : \Form::checkbox('is_viewable', '1') ;
-		$form .= '</p>';
-
-		$form .= '<p>';
-		$form .= \Form::label('markdown', 'Markdown?: ');
-		$form .= ($type->markdown = 1) ? \Form::checkbox('markdown', '1', true) : \Form::checkbox('markdown', '1');
 		$form .= '</p>';
 
 		$form .= '<p>' . \Form::submit('Submit') . '</p>';
@@ -168,9 +137,7 @@ class AspectTypeController extends Controller
         $type = AspectType::find($id);
 		$type->aspect_name = $request->input('aspect_name');
 		$type->aspect_description = $request->input('aspect_description');
-		$type->flavor = $request->input('flavor');
 		$type->is_viewable = $request->input('is_viewable');
-		$type->markdown = $request->input('markdown');
 		$type->save();
 		$request->session()->flash('message', 'Aspect Type updated.');
 		return redirect('/aspect_type/');
@@ -200,7 +167,7 @@ class AspectTypeController extends Controller
 
 		$new_type = DB::select('SELECT aspect_name FROM aspect_types where id = :id LIMIT 1', ['id' => $aspect_type_id]); 
 		$aspect_type_name = $new_type[0]->aspect_name;
-		$classname = \App\Ana::code_safe_name($aspect_type_name);
+		$classname = \imonroe\ana\Ana::code_safe_name($aspect_type_name);
 		$classname = $classname . 'Aspect';
 
 		$output = "// default custom class created automatically.".PHP_EOL.PHP_EOL;
@@ -236,6 +203,5 @@ class AspectTypeController extends Controller
 			return false;	
 		}
      } // end create_custom_aspect_class
-
 
 }

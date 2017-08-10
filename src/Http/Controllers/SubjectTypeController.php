@@ -42,11 +42,6 @@ class SubjectTypeController extends Controller
 		$form .= '</p>';
 
 		$form .= '<p>';
-		$form .= \Form::label('aspect_group', 'Aspect Group: ');
-		$form .= \Form::select('subject_type', ['1' => 'default']);
-		$form .= '</p>';
-
-		$form .= '<p>';
 		$form .= \Form::label('parent_id', 'Parent Subject Type: ');
 		$form .= \Form::select('parent_id', SubjectType::options_list());
 		$form .= '</p>';
@@ -75,7 +70,6 @@ class SubjectTypeController extends Controller
 		$type = new SubjectType; 
 		$type->type_name = $request->input('type_name');
 		$type->type_description = $request->input('type_description');
-		$type->aspect_group = (int) $request->input('aspect_group');
 		$type->parent_id = (int) $request->input('parent_id');
 		$type->save();
 		$request->session()->flash('message', 'Subject Type saved.');
@@ -132,11 +126,6 @@ class SubjectTypeController extends Controller
 		$form .= \Form::text('type_description', $subject_type->type_description);
 		$form .= '</p>';
 
-		$form .= '<p>';
-		$form .= \Form::label('aspect_group', 'Aspect Group: ');
-		$form .= \Form::select('subject_type', ['1' => 'default']);
-		$form .= '</p>';
-
 		// You can't be your own grandpa.
 		$parents_options = SubjectType::options_list();
 		if ( !empty($parents_options[$id]) ){
@@ -165,7 +154,6 @@ class SubjectTypeController extends Controller
         $type = SubjectType::findOrFail($id); 
 		$type->type_name = $request->input('type_name');
 		$type->type_description = $request->input('type_description');
-		$type->aspect_group = (int) $request->input('aspect_group');
 		$type->parent_id = (int) $request->input('parent_id');
 		$type->save();
 		$request->session()->flash('message', 'Subject Type updated.');

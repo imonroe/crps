@@ -47,10 +47,6 @@ class AspectType extends Model
 		$output .= '</script>'.PHP_EOL;
 		return $output;
 	}
-
-
-
-
 }
 
 

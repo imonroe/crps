@@ -17,7 +17,7 @@ class crpsServiceProvider extends ServiceProvider
     public function boot(){
 		//parent::boot();
 		// Migrations:
-		//$this->loadMigrationsFrom(__DIR__.'/path/to/migrations');
+		$this->loadMigrationsFrom(__DIR__.'/migrations');
 
 		// Views:
 		//$this->loadViewsFrom(__DIR__.'/path/to/views', 'courier');

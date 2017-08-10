@@ -1,6 +1,6 @@
 <?php
-
 namespace imonroe\crps\Http\Controllers;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use imonroe\crps\Aspect;
@@ -8,16 +8,14 @@ use imonroe\crps\AspectFactory;
 use imonroe\crps\AspectType;
 use imonroe\crps\Subject;
 
-class AspectController extends Controller
-{
-
+class AspectController extends Controller{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(){
-
+		//
     }
 
     /**
@@ -50,8 +48,8 @@ class AspectController extends Controller
      */
     public function store(Request $request){
 		$aspect = AspectFactory::make_from_aspect_type($request->input('aspect_type'));
-
 		$aspect->aspect_data = $request->input('aspect_data');
+
 		// Handle any settings that might be specified.
 		if (!is_null($aspect->notes_schema())){
 			$schema = json_decode($aspect->notes_schema(), true);
@@ -82,23 +80,21 @@ class AspectController extends Controller
 		} else {
 			$aspect->aspect_source = $request->input('aspect_source');
 		}
-		$aspect->predicted_accuracy = $request->input('predicted_accuracy');
+
 		$aspect->hidden = $request->input('hidden');
-		$aspect->hash = $aspect->get_hash();
 		$aspect->title = (!empty( $request->input('title') )) ? $request->input('title') : '';
-		
+		// a default display weight of 99 will always list the new aspect first.
+		$aspect->display_weight = 99;
 		// fire the pre-save hook, if it's there.
 		$aspect->pre_save($request);
-
+		// Save the record to the database
 		$aspect->save();
-
 		// fire the post-save hook, if it's there.
 		$aspect->post_save($request);
-
 		// attach the aspect to the subject.
 		$subject = Subject::find($request->input('subject_id'));
 		$subject->aspects()->attach($aspect->id);
-
+		// Let's get back to the subject at hand.
 		$request->session()->flash('message', 'Aspect saved.');
 		return redirect('/subject/'.$subject->id);
     }
@@ -142,7 +138,6 @@ class AspectController extends Controller
 
 		$aspect->aspect_type = $request->input('aspect_type');
 		$aspect->aspect_data = $request->input('aspect_data');
-		$aspect->predicted_accuracy = $request->input('predicted_accuracy');
 
 		$settings_array = (!is_null($aspect->aspect_notes)) ? json_decode($aspect->aspect_notes, true) : json_decode($aspect->notes_schema(), true);
 
@@ -161,14 +156,30 @@ class AspectController extends Controller
 		}
 		$aspect->aspect_notes = $settings_array;
 		$aspect->title = (!empty( $request->input('title') )) ? $request->input('title') : '';
-		$aspect->aspect_source = $request->input('aspect_source');
+		
+		// Sometimes, we'll have a file attached.
+		// In that case, we're going to store the file title in the aspect data, and the file path in the aspect_source fields.
+		$file_upload = false;
+		if ($request->hasFile('file_upload')) {
+			$file_upload = true;
+    		$file = $request->file('file_upload');
+			$filepath = $file->store('public');
+			$url = Storage::url($filepath);
+			$new_data = $url;
+		}
+
+		if ($file_upload) {
+			$aspect->aspect_source = $new_data;
+		} else {
+			$aspect->aspect_source = $request->input('aspect_source');
+		}
+
 		$aspect->hidden = $request->input('hidden');
-		$aspect->hash = $aspect->get_hash();
 
 		$aspect->update_aspect();
-		
-		//fire pre-update if available;
-		$aspect->pre_update($request);
+
+		//fire post_update if available;
+		$aspect->post_update($request);
 
 		$subject = $aspect->subjects()->first();  
 		$request->session()->flash('message', 'Aspect saved.');

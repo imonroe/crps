@@ -7,7 +7,18 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 CRPS is the Coldreader Persistent Storage system.
-Not much here yet.
+
+** Please note, this package is in development right now, and not yet ready to use **
+
+CRPS is designed to be a databasing system for when you don't know in advance what kind of information you want to store.  It implments a data model where you have a bunch of arbitrary subjects, each of which has an arbitrary number of Aspects.  
+
+Aspects can be thought of as some kind of fact or content that is relevant to its Subject.  Aspect data is stored in the database as text, in the broad sense. JSON counts as text, for instance, as do hyperlinks, markup, etc.  In addition to storing data, Aspects can be purely functional--a call to an external API, a web scraper to grab a bit of content from elsewhere, and so forth.  Each type of Aspect has a display method that produces the markup for use in templates.  Additionally, each type of Aspect also has a parse() function that it automatically called by a scheduled task once every five minutes.  From this function, an Aspect may perform actions on the data model; updating its own value, or creating/updating other Subjects or Aspects.
+
+New Aspect Types are easy and quick to build. Upon creation, the new Aspect Type will automatically add new boilerplate code for the necessary GUI forms (via the Laravel Collective Form API) and override methods; an Aspect Type definition is an OOP child class of the parent Aspect Type and inherits its methods. Custom Aspect Types can also be child classes of other custom Aspect Types, so if you build an APIResultsAspect class, you can make a FacebookAPIResultsAspect class that inherits the work you've already done for APIResultsAspect, for instance. 
+
+## Dependencies
+- Laravel 5.4
+- jQuery
 
 ## Install
 
@@ -45,13 +56,25 @@ protected function schedule(Schedule $schedule){
 	})->name('parse_loop')->everyFiveMinutes()->withoutOverlapping();
 }
 ```
+Now we need to set up a file for your own custom aspects.
+
+First, copy the CustomAspects.php file to your /app directory.  This is where boilerplate code for new aspect types will be written.  This is the heart of customizing the system
+
+You're going to need to add a line to your application's composer.json, in the "autoload" key:
+``` php
+"files": ["app/CustomAspects.php"]
+```
 
 
 ## Usage
 
 ``` php
-$cprs = new imonroe\crps();
-echo $cprs->echoPhrase('Hello, world');
+
+$subject = new Subject;
+foreach ($subject->aspects() as $aspect){
+	$aspect->display_aspect();
+}
+
 ```
 
 ## Change log

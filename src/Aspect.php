@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Carbon\Carbon;
+use imonroe\ana\Ana;
 
 class Aspect extends Model
 {
 	protected $table = 'aspects';
-	protected $fillable = ['aspect_type'];
+	protected $fillable = ['aspect_type', 'title'];
 	protected $keep_history = true; 
 
 	/**
@@ -79,15 +80,15 @@ class Aspect extends Model
 		// We anticipate here that we have an empty model, with just the ID set.
 		$raw_aspect_data = DB::select('select * from aspects where id = :id', ['id' => $this->id]);
 		foreach ($raw_aspect_data as $a_data){
-			$this->title = $a_data->title;
+			// we may have overridden the title in a constructor in a subclass somewhere, so preserve it if so.
+			if ( empty($this->title) || !empty($a_data->title) ){
+				$this->title = $a_data->title;
+			}
 			$this->aspect_type = $a_data->aspect_type;
 			$this->aspect_data = $a_data->aspect_data;
-			$this->predicted_accuracy = $a_data->predicted_accuracy;
 			$this->aspect_notes = $a_data->aspect_notes;
 			$this->aspect_source = $a_data->aspect_source;
 			$this->hidden = $a_data->hidden;
-			$this->hash = $a_data->hash;
-			$this->simhash = $a_data->simhash;
 			$this->last_parsed = $a_data->last_parsed;
 			$this->created_at = $a_data->created_at;
 			$this->updated_at = $a_data->updated_at;
@@ -95,37 +96,14 @@ class Aspect extends Model
 		}
 	}
 
-	public function save_snapshot(){
-		$snapshot = $this->toJson();
-		DB::table('aspect_history')->insert(
-    		['aspect_id' => $this->id, 'snapshot' => $snapshot, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),]
-		);
-	}
-
-	public function get_history(){
-		$history = array();
-		$snapshots= DB::table('aspect_history')->where('aspect_id', '=', $this->id)->orderBy('created_at', 'desc')->get();
-		foreach ($snapshots as $snapshot){
-			$new_aspect = json_decode($snapshot->snapshot);
-			$history[] = $new_aspect;
-		}
-		$collection = collect($history);
-		return $collection;
-	}
-
 	public function update_aspect(){
 		$this->exists = true;
-
 		if (is_array($this->aspect_notes)){
 			$settings = $this->aspect_notes;
 		} else {
 			$settings = (!is_null($this->aspect_notes)) ? json_decode($this->aspect_notes, true) : json_decode($this->notes_schema(), true);
 		}
 		$this->aspect_notes = $settings;
-		$this->hash = $this->get_hash();
-		if ($this->keep_history){
-			$this->save_snapshot();
-		}
 		$this->save();
 	}
 
@@ -171,7 +149,7 @@ class Aspect extends Model
 			$form .= ' (<a href="/aspect_type/create">Add a new Aspect Type</a>)';
 			$form .= '</p>';
 		}
-		
+
 		$form .= '<p>';
 		$form .= \Form::label('title', 'Title: ');
 		$form .= \Form::text('title');
@@ -181,11 +159,6 @@ class Aspect extends Model
 		$form .= \Form::label( 'aspect_data', 'Aspect Data: ' );
 		$form .= '<br />';
 		$form .= \Form::textarea('aspect_data');
-		$form .= '</p>';
-
-		$form .= '<p>';
-		$form .= \Form::label('predicted_accuracy', 'Predicted Accuracy: ');
-		$form .= \Form::number('predicted_accuracy');
 		$form .= '</p>';
 
 		$form .= '<p>';
@@ -216,7 +189,7 @@ class Aspect extends Model
 		$form .= \Form::open(['url' => '/aspect/'.$id.'/edit', 'method' => 'post']);
 		$form .= \Form::hidden('aspect_id', $id);
 		$form .= \Form::hidden( 'aspect_type', $aspect->aspect_type()->id );
-		
+
 		$form .= '<p>';
 		$form .= \Form::label('title', 'Title: ');
 		$form .= \Form::text('title', $aspect->title);
@@ -226,11 +199,6 @@ class Aspect extends Model
 		$form .= \Form::label( 'aspect_data', 'Aspect Data: ' );
 		$form .= '<br />';
 		$form .= \Form::textarea('aspect_data', $aspect->aspect_data);
-		$form .= '</p>';
-
-		$form .= '<p>';
-		$form .= \Form::label('predicted_accuracy', 'Predicted Accuracy: ');
-		$form .= \Form::number('predicted_accuracy',  $aspect->predicted_accuracy);
 		$form .= '</p>';
 
 		$form .= '<p>';
