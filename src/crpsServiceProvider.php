@@ -14,19 +14,20 @@ class crpsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(){
-		//parent::boot();
-		// Migrations:
-		$this->loadMigrationsFrom(__DIR__.'/migrations');
+    public function boot()
+    {
+        //parent::boot();
+        // Migrations:
+        $this->loadMigrationsFrom(__DIR__.'/migrations');
 
-		// Views:
-		//$this->loadViewsFrom(__DIR__.'/path/to/views', 'courier');
-		//$this->publishes([
-		//	__DIR__.'/path/to/views' => resource_path('views/vendor/courier'),
-		//]);
+        // Views:
+        //$this->loadViewsFrom(__DIR__.'/path/to/views', 'courier');
+        //$this->publishes([
+        //	__DIR__.'/path/to/views' => resource_path('views/vendor/courier'),
+        //]);
 
-		// Routes:
-		$this->loadRoutesFrom(__DIR__.'/Http/routes.php');
+        // Routes:
+        $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
 
     }
 
@@ -35,7 +36,8 @@ class crpsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register(){
+    public function register()
+    {
 
     }
 }
