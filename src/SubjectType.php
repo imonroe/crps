@@ -9,7 +9,7 @@ class SubjectType extends Model
     //
     public static function directory()
     {
-        $output = '<ul class="subject_type_directory">'.PHP_EOL;
+        $output = '<ul class="subject_type_directory" id="treeData">'.PHP_EOL;
         $top_level_types = SubjectType::where('parent_id', -1)->orderBy('type_name')->get();
         foreach ($top_level_types as $t){
             $output .= $t->get_html(true);
@@ -88,7 +88,8 @@ class SubjectType extends Model
         $output .= '<strong>'.$this->type_name.'</strong>';
         if ($with_links) { $output .= '</a>'; 
         }
-        $output .= '</li>'.PHP_EOL;
+        //$output .= '</li>'.PHP_EOL;
+		$output .= PHP_EOL;
 
         if ($this->children()) {
             // Recurse.
