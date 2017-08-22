@@ -14,7 +14,7 @@ class CreateCrpsTables extends Migration
     public function up()
     {
         // Main Tables
-        
+
         if (!(Schema::hasTable('aspects')) ) {
             Schema::create(
                 'aspects', function (Blueprint $t) {
@@ -26,13 +26,13 @@ class CreateCrpsTables extends Migration
                     $t->text('aspect_source')->nullable();
                     $t->integer('hidden')->nullable();
                     $t->integer('folded')->nullable();
-                    $t->integer('display_weight')->nullable()->default($value);
+                    $t->integer('display_weight')->nullable()->default(100);
                     $t->dateTime('last_parsed')->nullable();
                     $t->timestamps();
                 }
             );
         }
-        
+
         if (!(Schema::hasTable('aspect_subject')) ) {
             Schema::create(
                 'aspect_subject', function (Blueprint $t) {
@@ -43,7 +43,7 @@ class CreateCrpsTables extends Migration
                 }
             );
         }
-        
+
         if (!(Schema::hasTable('aspect_types')) ) {
             Schema::create(
                 'aspect_types', function (Blueprint $t) {
@@ -66,7 +66,7 @@ class CreateCrpsTables extends Migration
                 }
             );
         }
-        
+
         if (!(Schema::hasTable('subject_types')) ) {
             Schema::create(
                 'subject_types', function (Blueprint $t) {

@@ -332,10 +332,12 @@ class AspectFactory
         $new_type_name = DB::select('SELECT aspect_name FROM aspect_types where id IN (SELECT aspect_type FROM aspects where id = :id) LIMIT 1', ['id' => $aspect_id]); 
         $mutated_aspect_type = $new_type_name[0]->aspect_name;
         $classname = Ana::code_safe_name($mutated_aspect_type);
-        $classname = 'App\\' . $classname . 'Aspect';
+        $classname = $classname . 'Aspect';
         if (class_exists($classname) ) {
             $new_classname = $classname;
-        }
+        } elseif ( class_exists('\App\\'.$classname) ){
+			$new_classname = '\App\\' . $classname;
+		}
         $finder = new $new_classname();
         $finder->id = $aspect_id;
         $finder->manual_load();
@@ -349,11 +351,13 @@ class AspectFactory
         $new_type_name = DB::select('SELECT aspect_name FROM aspect_types where id = :id LIMIT 1', ['id' => $aspect_type_id]); 
         $mutated_aspect_type = $new_type_name[0]->aspect_name;
         $classname = Ana::code_safe_name($mutated_aspect_type);
-        $classname = 'App\\' . $classname . 'Aspect';
+        $classname = $classname . 'Aspect';
 
         if (class_exists($classname) ) {
             $new_classname = $classname;
-        }
+        } elseif ( class_exists('\App\\'.$classname) ){
+			$new_classname = '\App\\' . $classname;
+		}
         $finder = new $new_classname();
         $finder->aspect_type = $aspect_type_id;
         return $finder;
