@@ -1,6 +1,7 @@
 <?php
 
 namespace imonroe\crps;
+
 use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
 use imonroe\crps\Subject;
@@ -28,7 +29,6 @@ class crpsServiceProvider extends ServiceProvider
 
         // Routes:
         $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
-
     }
 
     /**
@@ -38,6 +38,5 @@ class crpsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
     }
 }

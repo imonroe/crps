@@ -48,13 +48,11 @@ class Subject extends Model
     public static function exists($potential_subject)
     {
         $output = false;
-        if (is_string($potential_subject) ) {
-            if (!is_null(self::find_by_name($potential_subject)) ) {
+        if (is_string($potential_subject)) {
+            if (!is_null(self::find_by_name($potential_subject))) {
                 $output = true;
             }
         }
         return $output;
     }
-
-
 }

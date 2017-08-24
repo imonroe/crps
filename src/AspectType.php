@@ -20,8 +20,10 @@ class AspectType extends Model
     {
         $all_types = AspectType::all();
         $output = array('-1' => 'None');
-        foreach ($all_types as $t){
-            $output[$t->id] = $t->aspect_name;
+        foreach ($all_types as $t) {
+            if ($t->is_viewable) {
+                $output[$t->id] = $t->aspect_name;
+            }
         }
         return $output;
     }
@@ -40,7 +42,7 @@ class AspectType extends Model
         // create the menu.
         $output .= '<select id="aspect_type_jump_menu">'.PHP_EOL;
         $output .= '<option value="#"> - Add A New Aspect - </option>';
-        foreach ($options_array as $aspect_type_id => $option){
+        foreach ($options_array as $aspect_type_id => $option) {
             $output .= '<option value="/aspect/create/'.$subject_id.'/type/'.$aspect_type_id.'">'.$option.'</option>'.PHP_EOL;
         }
         $output .= '</select>'.PHP_EOL.PHP_EOL;
@@ -51,12 +53,3 @@ class AspectType extends Model
         return $output;
     }
 }
-
-
-
-
-
-
-
-
-

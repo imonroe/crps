@@ -11,7 +11,7 @@ class SubjectType extends Model
     {
         $output = '<ul class="subject_type_directory" id="treeData">'.PHP_EOL;
         $top_level_types = SubjectType::where('parent_id', -1)->orderBy('type_name')->get();
-        foreach ($top_level_types as $t){
+        foreach ($top_level_types as $t) {
             $output .= $t->get_html(true);
         }
         $output .= '</ul>'.PHP_EOL;
@@ -22,7 +22,7 @@ class SubjectType extends Model
     {
         $all_types = SubjectType::all();
         $output = array('-1' => 'None');
-        foreach ($all_types as $t){
+        foreach ($all_types as $t) {
             $output[$t->id] = $t->type_name;
         }
         return $output;
@@ -40,7 +40,7 @@ class SubjectType extends Model
         $subjects = $this->subjects();
         $children = $this->children();
         if ($children) {
-            foreach ($children as $child){
+            foreach ($children as $child) {
                 $sub_subjects = $child->get_all_subjects();
                 $merged = $subjects->merge($sub_subjects);
                 $subjects = $merged;
@@ -52,14 +52,14 @@ class SubjectType extends Model
 
     public function children()
     {
-        if (SubjectType::where('parent_id', '=', $this->id)->count() > 0 ) {
+        if (SubjectType::where('parent_id', '=', $this->id)->count() > 0) {
             return SubjectType::where('parent_id', '=', $this->id)->orderBy('type_name')->get();
         } else {
             return false;
         }
     }
 
-    public function has_parent() 
+    public function has_parent()
     {
         if ($this->parent_id > 0) {
             // we need to return an int here, not an object.
@@ -74,34 +74,33 @@ class SubjectType extends Model
         $output = array();
         $unsorted = SubjectType::all();
         $all_types = $unsorted->sortBy('type_name');
-        foreach ($all_types as $t){
+        foreach ($all_types as $t) {
             $output[$t->id] = $t->type_name;
         }
         return $output;
     }
 
-    public function get_html( $with_links=false)
+    public function get_html($with_links = false)
     {
         $output = '<li>';
-        if ($with_links) { $output .= '<a href="/subject_type/'.$this->id.'">'; 
+        if ($with_links) {
+            $output .= '<a href="/subject_type/'.$this->id.'">';
         }
         $output .= '<strong>'.$this->type_name.'</strong>';
-        if ($with_links) { $output .= '</a>'; 
+        if ($with_links) {
+            $output .= '</a>';
         }
         //$output .= '</li>'.PHP_EOL;
-		$output .= PHP_EOL;
+        $output .= PHP_EOL;
 
         if ($this->children()) {
             // Recurse.
             $output .= '<ul>'.PHP_EOL;
-            foreach ($this->children() as $child){
+            foreach ($this->children() as $child) {
                 $output .= $child->get_html($with_links);
             }
             $output .= '</ul>'.PHP_EOL;
         }
         return $output;
     }
-
-
-
 }

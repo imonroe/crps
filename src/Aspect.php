@@ -14,7 +14,7 @@ class Aspect extends Model
 {
     protected $table = 'aspects';
     protected $fillable = ['aspect_type', 'title'];
-    protected $keep_history = true; 
+    protected $keep_history = true;
 
     /**
      * The attributes that should be cast to native types.
@@ -34,8 +34,8 @@ class Aspect extends Model
     }
 
     /**
-        If you want to save metadata fields for this array, just set up the schema     
-        you want to use here.  When the Aspect is saved, the array will be JSON-ified 
+        If you want to save metadata fields for this array, just set up the schema
+        you want to use here.  When the Aspect is saved, the array will be JSON-ified
         and saved as aspect_notes
 
         Returns JSON.
@@ -47,7 +47,7 @@ class Aspect extends Model
 
     public function isSubclass()
     {
-        if (is_subclass_of($this, 'Aspect') ) {
+        if (is_subclass_of($this, 'Aspect')) {
             return true;
         } else {
             return false;
@@ -55,7 +55,7 @@ class Aspect extends Model
     }
 
     // override the base Model function
-    public function newFromBuilder($attributes = array(), $connection=null)
+    public function newFromBuilder($attributes = array(), $connection = null)
     {
         $aspect_type = $attributes->aspect_type;
         if ((int)$aspect_type > 0) {
@@ -71,7 +71,7 @@ class Aspect extends Model
 
     /**
      * Create a new Eloquent Collection instance.
-     *  This lets us say, for instance, any time you're retrieving Aspects in an eloquent collection, 
+     *  This lets us say, for instance, any time you're retrieving Aspects in an eloquent collection,
      *  they will be recast in to the correct Aspect types before being returned.
      *
      * @param  array $models
@@ -86,9 +86,9 @@ class Aspect extends Model
     {
         // We anticipate here that we have an empty model, with just the ID set.
         $raw_aspect_data = DB::select('select * from aspects where id = :id', ['id' => $this->id]);
-        foreach ($raw_aspect_data as $a_data){
+        foreach ($raw_aspect_data as $a_data) {
             // we may have overridden the title in a constructor in a subclass somewhere, so preserve it if so.
-            if (empty($this->title) || !empty($a_data->title) ) {
+            if (empty($this->title) || !empty($a_data->title)) {
                 $this->title = $a_data->title;
             }
             $this->aspect_type = $a_data->aspect_type;
@@ -100,7 +100,7 @@ class Aspect extends Model
             $this->created_at = $a_data->created_at;
             $this->updated_at = $a_data->updated_at;
             $this->display_weight = $a_data->display_weight;
-			$this->folded = $a_data->folded;
+            $this->folded = $a_data->folded;
         }
     }
 
@@ -126,10 +126,10 @@ class Aspect extends Model
         $schema = json_decode($this->notes_schema(), true);
         $output = '';
         $settings_array = (!is_null($this->aspect_notes)) ? json_decode($this->aspect_notes, true) : $schema;
-        if (!empty($settings_array) ) {
+        if (!empty($settings_array)) {
             $output .= '<fieldset class="small">'.PHP_EOL;
             $output .= '<legend>Settings</legend>'.PHP_EOL;
-            foreach($settings_array as $name => $value){
+            foreach ($settings_array as $name => $value) {
                 if (is_array($schema[$name])) {
                     // we want this to be a dropdown list
                     $output .= \Form::label('settings_'.$name, $name.': ');
@@ -147,7 +147,7 @@ class Aspect extends Model
         return $output;
     }
 
-    public function create_form($subject_id, $aspect_type_id=null)
+    public function create_form($subject_id, $aspect_type_id = null)
     {
         $form = \Form::open(['url' => '/aspect/create', 'method' => 'post', 'files' => true]);
         $form .= \Form::hidden('subject_id', $subject_id);
@@ -267,7 +267,7 @@ class Aspect extends Model
         //
     }
     
-    /* 
+    /*
 	   Below, we're going to prototype some pre- and post-save hooks that can be overridden by child
 	   classes, such that we can do some manipulations on the data before we save it if we want.
 	   They get called in the AspectController in the relevant places.
@@ -275,26 +275,24 @@ class Aspect extends Model
 
     public function pre_save(Request $request)
     {
-        return false; 
+        return false;
     }
     public function post_save(Request $request)
     {
-        return false; 
+        return false;
     }
     public function pre_update(Request $request)
     {
-        return false; 
+        return false;
     }
     public function post_update(Request $request)
     {
-        return false; 
+        return false;
     }
     public function pre_delete(Request $request)
     {
-        return false; 
+        return false;
     }
-
-
 } // End of base Aspect Class.
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -314,7 +312,7 @@ class AspectCollection extends \Illuminate\Database\Eloquent\Collection
     private function recastAll()
     {
         $new_collection_array = array();
-        foreach ($this->items as $m){
+        foreach ($this->items as $m) {
             $new_object = AspectFactory::make($m->id);
             $new_collection_array[] = $new_object;
         }
@@ -329,15 +327,15 @@ class AspectFactory
     {
         // Lets try to get an aspect_type name to use for a class.
         $new_classname = 'App\DefaultAspect';  // <--- if we don't have a custom type, we'll use this as our default.
-        $new_type_name = DB::select('SELECT aspect_name FROM aspect_types where id IN (SELECT aspect_type FROM aspects where id = :id) LIMIT 1', ['id' => $aspect_id]); 
+        $new_type_name = DB::select('SELECT aspect_name FROM aspect_types where id IN (SELECT aspect_type FROM aspects where id = :id) LIMIT 1', ['id' => $aspect_id]);
         $mutated_aspect_type = $new_type_name[0]->aspect_name;
         $classname = Ana::code_safe_name($mutated_aspect_type);
         $classname = $classname . 'Aspect';
-        if (class_exists($classname) ) {
+        if (class_exists($classname)) {
             $new_classname = $classname;
-        } elseif ( class_exists('\App\\'.$classname) ){
-			$new_classname = '\App\\' . $classname;
-		}
+        } elseif (class_exists('\App\\'.$classname)) {
+            $new_classname = '\App\\' . $classname;
+        }
         $finder = new $new_classname();
         $finder->id = $aspect_id;
         $finder->manual_load();
@@ -348,16 +346,16 @@ class AspectFactory
     public static function make_from_aspect_type($aspect_type_id)
     {
         $new_classname = 'App\DefaultAspect';  // <--- if we don't have a custom type, we'll use this as our default.
-        $new_type_name = DB::select('SELECT aspect_name FROM aspect_types where id = :id LIMIT 1', ['id' => $aspect_type_id]); 
+        $new_type_name = DB::select('SELECT aspect_name FROM aspect_types where id = :id LIMIT 1', ['id' => $aspect_type_id]);
         $mutated_aspect_type = $new_type_name[0]->aspect_name;
         $classname = Ana::code_safe_name($mutated_aspect_type);
         $classname = $classname . 'Aspect';
 
-        if (class_exists($classname) ) {
+        if (class_exists($classname)) {
             $new_classname = $classname;
-        } elseif ( class_exists('\App\\'.$classname) ){
-			$new_classname = '\App\\' . $classname;
-		}
+        } elseif (class_exists('\App\\'.$classname)) {
+            $new_classname = '\App\\' . $classname;
+        }
         $finder = new $new_classname();
         $finder->aspect_type = $aspect_type_id;
         return $finder;
