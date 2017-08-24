@@ -34,12 +34,12 @@ class Aspect extends Model
     }
 
     /**
-        If you want to save metadata fields for this array, just set up the schema
-        you want to use here.  When the Aspect is saved, the array will be JSON-ified
-        and saved as aspect_notes
-
-        Returns JSON.
-     */
+    * If you want to save metadata fields for this array, just set up the schema
+    * you want to use here.  When the Aspect is saved, the array will be JSON-ified
+    * and saved as aspect_notes
+    *
+    * @returns JSON.
+    */
     public function notes_schema()
     {
         return null;
