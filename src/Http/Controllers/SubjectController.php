@@ -127,6 +127,12 @@ class SubjectController extends Controller
         return view('subject.show', ['subject'=>$subject]);
     }
 
+	public function coldreader_homepage()
+	{
+		$subject = Subject::where('name', '=', 'Coldreader Home Page')->first();
+		 return view('subject.show', ['subject'=>$subject]);
+	}
+
     /**
      * Show the form for editing the specified resource.
      *
