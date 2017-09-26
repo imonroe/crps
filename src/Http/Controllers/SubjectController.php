@@ -14,11 +14,22 @@ use imonroe\crps\SubjectType;
 use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
 use imonroe\crps\AspectFactory;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Laravel\Spark\Spark;
+use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
+
+  /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+      $this->middleware('auth');
+  }
     /**
      * Display a listing of the resource.
      *

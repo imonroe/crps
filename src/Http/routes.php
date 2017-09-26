@@ -1,11 +1,12 @@
-<?php 
+<?php
 
 
 use Illuminate\Http\Request;
+use imonroe\crps\Aspect;
 
 Route::namespace('imonroe\crps\Http\Controllers')->group(
     function () {
-        Route::middleware(['auth', 'web'])->group(
+        Route::middleware(['web'])->group(
             function () {
                 // Subject routes:
                 Route::get('/subject/autocomplete', 'SubjectController@autocomplete'); // subject autocompleter
@@ -48,7 +49,7 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::get('/aspect/{id}/edit', 'AspectController@edit');  // edit aspect form
                 Route::post('/aspect/{id}/edit', 'AspectController@update');  // edit aspect form handler
                 Route::get('/aspect/{id}/delete', 'AspectController@destroy');  // delete aspect form handler
-				
+
 				Route::post('/aspect/{id}/fold', function ($id, Request $request) {
 					$aspect = Aspect::find($id);
 

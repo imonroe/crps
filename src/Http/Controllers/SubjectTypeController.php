@@ -2,6 +2,7 @@
 
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
+use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -10,6 +11,17 @@ use imonroe\crps\Subject;
 
 class SubjectTypeController extends Controller
 {
+
+  /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+      $this->middleware('auth');
+  }
+
     /**
      * Display a listing of the resource.
      *
@@ -60,14 +72,14 @@ class SubjectTypeController extends Controller
     public function store(Request $request)
     {
         /*
-        id	int(10) unsigned Auto Increment	 
-        type_name	varchar(191)	 
-        type_description	text NULL	 
-        aspect_group	int(11) NULL	 
-        parent_id	int(11) NULL	 
+        id	int(10) unsigned Auto Increment
+        type_name	varchar(191)
+        type_description	text NULL
+        aspect_group	int(11) NULL
+        parent_id	int(11) NULL
         */
 
-        $type = new SubjectType; 
+        $type = new SubjectType;
         $type->type_name = $request->input('type_name');
         $type->type_description = $request->input('type_description');
         $type->parent_id = (int) $request->input('parent_id');
@@ -97,14 +109,14 @@ class SubjectTypeController extends Controller
         $paginate = new LengthAwarePaginator($all_subjects->forPage($page, $perPage), $all_subjects->count(), $perPage, $page, ['path'=>url('/subject_type/'.$id)]);
 
         return view(
-            'subject_type.show', ['type' => $type, 
-                                          'title'=>'Subject Type: '.$type->type_name, 
+            'subject_type.show', ['type' => $type,
+                                          'title'=>'Subject Type: '.$type->type_name,
                                           'parent_name' => $parent_type_name,
                                           'parent_type_id' => $parent_type_id,
                                           'children' => $children,
-                                          'subjects' => $paginate, 
+                                          'subjects' => $paginate,
                                          ]
-        ); 
+        );
     }
 
     /**
@@ -153,7 +165,7 @@ class SubjectTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $type = SubjectType::findOrFail($id); 
+        $type = SubjectType::findOrFail($id);
         $type->type_name = $request->input('type_name');
         $type->type_description = $request->input('type_description');
         $type->parent_id = (int) $request->input('parent_id');

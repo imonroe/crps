@@ -1,6 +1,7 @@
 <?php
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
+use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use imonroe\crps\Aspect;
@@ -10,6 +11,17 @@ use imonroe\crps\Subject;
 
 class AspectController extends Controller
 {
+
+  /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+      $this->middleware('auth');
+  }
+
     /**
      * Display a listing of the resource.
      *
@@ -150,7 +162,7 @@ class AspectController extends Controller
         $settings_array = (!is_null($aspect->aspect_notes)) ? json_decode($aspect->aspect_notes, true) : json_decode($aspect->notes_schema(), true);
 
         $request_array = $request->all();
-        $schema_array = json_decode($aspect->notes_schema(), true); 
+        $schema_array = json_decode($aspect->notes_schema(), true);
 
         if (is_array($schema_array)) {
             foreach ($schema_array as $key => $setting){
@@ -164,7 +176,7 @@ class AspectController extends Controller
         }
         $aspect->aspect_notes = $settings_array;
         $aspect->title = (!empty($request->input('title'))) ? $request->input('title') : '';
-        
+
         // Sometimes, we'll have a file attached.
         // In that case, we're going to store the file title in the aspect data, and the file path in the aspect_source fields.
         $file_upload = false;
@@ -189,7 +201,7 @@ class AspectController extends Controller
         //fire post_update if available;
         $aspect->post_update($request);
 
-        $subject = $aspect->subjects()->first();  
+        $subject = $aspect->subjects()->first();
         $request->session()->flash('message', 'Aspect saved.');
         return redirect('/subject/'.$subject->id);
     }

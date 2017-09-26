@@ -13,7 +13,7 @@ class AspectType extends Model
     }
 
     /*
-    This function generates an array that can be used as a drop-down list of 
+    This function generates an array that can be used as a drop-down list of
     AspectTypes to use in forms, etc.
     */
     public static function get_options_array()
@@ -46,10 +46,16 @@ class AspectType extends Model
             $output .= '<option value="/aspect/create/'.$subject_id.'/type/'.$aspect_type_id.'">'.$option.'</option>'.PHP_EOL;
         }
         $output .= '</select>'.PHP_EOL.PHP_EOL;
+
+        $output_array = ['markup' => $output];
+
         // create the javascript jump behavior
-        $output .= '<script type="text/javascript">'.PHP_EOL;
+        $output = '<script type="text/javascript">'.PHP_EOL;
         $output .= '$(function(){ $("#aspect_type_jump_menu").change(function(){ window.location.href = $("#aspect_type_jump_menu").val(); }); });'.PHP_EOL;
         $output .= '</script>'.PHP_EOL;
-        return $output;
+
+        $output_array['scripts'] = $output;
+
+        return $output_array;
     }
 }

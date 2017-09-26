@@ -35,8 +35,8 @@ class Subject extends Model
 
     public function get_jump_menu()
     {
-        $output = AspectType::get_jump_menu($this->id);
-        return $output;
+        $output_array = AspectType::get_jump_menu($this->id);
+        return $output_array;
     }
 
     public static function find_by_name($subject_name)

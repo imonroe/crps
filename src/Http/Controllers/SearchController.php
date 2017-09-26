@@ -2,6 +2,7 @@
 
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
+use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use imonroe\crps\Aspect;
@@ -12,6 +13,15 @@ use imonroe\crps\Http\Controllers\GoogleController;
 
 class SearchController extends Controller
 {
+  /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+      $this->middleware('auth');
+  }
 
     /*
     *	The basic web search pulls results from DuckDuckGo to try to provide an abstract on a search subject.
@@ -29,7 +39,7 @@ class SearchController extends Controller
         //curl_setopt($curl, CURLOPT_USERAGENT, $app['user-agent']);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $opts);
         $results = curl_exec($curl);
-        curl_close($curl);    
+        curl_close($curl);
         $output = json_decode($results, true);
         return $output;
     }
@@ -49,7 +59,7 @@ class SearchController extends Controller
             'search.results', ['abstract' => $web_search_results,
                                        'google_search_results' => $google_search_results,
                                        'google_drive_results' => $google_drive_results,
-                                       'subject_search_results' => $subject_results, 
+                                       'subject_search_results' => $subject_results,
                                        'title'=>'Search Results for: '.$query,
                                       ]
         );
