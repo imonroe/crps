@@ -39,6 +39,12 @@ class Subject extends Model
         return $output_array;
     }
 
+    public function get_jump_menu_json()
+    {
+        $output_array = AspectType::get_options_array('json');
+        return $output_array;
+    }
+
     public static function find_by_name($subject_name)
     {
         Log::info('Got a subject name like: '.$subject_name);

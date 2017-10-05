@@ -16,14 +16,28 @@ class AspectType extends Model
     This function generates an array that can be used as a drop-down list of
     AspectTypes to use in forms, etc.
     */
-    public static function get_options_array()
+    public static function get_options_array($format='')
     {
         $all_types = AspectType::all();
-        $output = array('-1' => 'None');
-        foreach ($all_types as $t) {
-            if ($t->is_viewable) {
-                $output[$t->id] = $t->aspect_name;
-            }
+        //$output = array('-1' => 'None');
+        if ($format == 'json'){
+          // We want the output in JSON format
+          foreach ($all_types as $t) {
+              if ($t->is_viewable) {
+                  $output[] = [
+                    'value' => $t->id,
+                    'label' => $t->aspect_name,
+                  ];
+              }
+          }
+          $output = json_encode($output);
+        } else {
+          // We want the output as a PHP array.
+          foreach ($all_types as $t) {
+              if ($t->is_viewable) {
+                  $output[$t->id] = $t->aspect_name;
+              }
+          }
         }
         return $output;
     }

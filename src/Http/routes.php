@@ -3,6 +3,7 @@
 
 use Illuminate\Http\Request;
 use imonroe\crps\Aspect;
+use imonroe\crps\AspectType;
 
 Route::namespace('imonroe\crps\Http\Controllers')->group(
     function () {
@@ -50,18 +51,16 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::post('/aspect/{id}/edit', 'AspectController@update');  // edit aspect form handler
                 Route::get('/aspect/{id}/delete', 'AspectController@destroy');  // delete aspect form handler
 
-				Route::post('/aspect/{id}/fold', function ($id, Request $request) {
-					$aspect = Aspect::find($id);
-
-					if ( $aspect->folded ){
-						$aspect->folded = 0;
-					} else {
-						$aspect->folded = 1;
-					}
-
-					$aspect->update_aspect();
-					dd($aspect);
-				});
+        				Route::post('/aspect/{id}/fold', function ($id, Request $request) {
+        					$aspect = Aspect::find($id);
+        					if ( $aspect->folded ){
+        						$aspect->folded = 0;
+        					} else {
+        						$aspect->folded = 1;
+        					}
+        					$aspect->update_aspect();
+        					//dd($aspect);
+        				});
 
                 // Aspect type routes:
                 Route::get('/aspect_type', 'AspectTypeController@index');  // aspect_type index
@@ -71,6 +70,11 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::get('/aspect_type/{id}/edit', 'AspectTypeController@edit');  // edit aspect_type form
                 Route::post('/aspect_type/{id}/edit', 'AspectTypeController@update');  // edit aspect_type form handler
                 Route::get('/aspect_type/{id}/delete', 'AspectTypeController@destroy');  // delete aspect_type form handler
+                Route::post('/aspect_type/add_aspect_jump_menu', function (){
+                  $output = AspectType::get_options_array('json');
+                  //dd($output);
+                  return $output;
+                });
 
                 // Search routes
                 Route::get('/search', 'SearchController@index');

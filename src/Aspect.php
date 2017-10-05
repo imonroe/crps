@@ -127,19 +127,15 @@ class Aspect extends Model
         $output = '';
         $settings_array = (!is_null($this->aspect_notes)) ? json_decode($this->aspect_notes, true) : $schema;
         if (!empty($settings_array)) {
-            $output .= '<fieldset class="small">'.PHP_EOL;
+            $output .= '<fieldset>'.PHP_EOL;
             $output .= '<legend>Settings</legend>'.PHP_EOL;
             foreach ($settings_array as $name => $value) {
                 if (is_array($schema[$name])) {
                     // we want this to be a dropdown list
-                    $output .= \Form::label('settings_'.$name, $name.': ');
-                    $output .= \Form::select('settings_'.$name, $schema[$name], $value);
-                    $output .= '<br />';
+                    $output .= \BootForm::select('settings_'.$name, $schema[$name], $value);
                 } else {
                     // just a text field, please.
-                    $output .= \Form::label('settings_'.$name, $name.': ');
-                    $output .= \Form::text('settings_'.$name, $value);
-                    $output .= '<br />';
+                    $output .= \BootForm::text('settings_'.$name, $name.': ', $value);
                 }
             }
             $output .= '</fieldset>';
@@ -147,7 +143,7 @@ class Aspect extends Model
         return $output;
     }
 
-    public function create_form($subject_id, $aspect_type_id = null)
+    public function create_form_OLD($subject_id, $aspect_type_id = null)
     {
         $form = \Form::open(['url' => '/aspect/create', 'method' => 'post', 'files' => true]);
         $form .= \Form::hidden('subject_id', $subject_id);
@@ -195,48 +191,40 @@ class Aspect extends Model
         return $form;
     }
 
+    public function create_form($subject_id, $aspect_type_id = null){
+      $form = \BootForm::horizontal(['url' => '/aspect/create', 'method' => 'post', 'files' => true]);
+      $form .= \BootForm::hidden('subject_id', $subject_id);
+      if (!is_null($aspect_type_id)) {
+          $form .= \BootForm::hidden('aspect_type', $aspect_type_id);
+      } else {
+          $form .= \BootForm::select('aspect_type', AspectType::get_options_array());
+          $form .= ' (<a href="/aspect_type/create">Add a new Aspect Type</a>)';
+      }
+      $form .= \BootForm::text('title', 'Title');
+      $form .= \BootForm::textarea('aspect_data', 'Aspect Data');
+      $form .= \BootForm::text('aspect_source');
+      $form .= \BootForm::checkbox('hidden', 'Hidden?');
+      $form .= \BootForm::file('file_upload');
+      $form .= $this->notes_fields();
+      $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
+      $form .= \BootForm::close();
+      return $form;
+    }
+
     public function edit_form($id)
     {
         $aspect = Aspect::find($id);
-        $form = '';
-        $form .= \Form::open(['url' => '/aspect/'.$id.'/edit', 'method' => 'post']);
-        $form .= \Form::hidden('aspect_id', $id);
-        $form .= \Form::hidden('aspect_type', $aspect->aspect_type()->id);
-
-        $form .= '<p>';
-        $form .= \Form::label('title', 'Title: ');
-        $form .= \Form::text('title', $aspect->title);
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('aspect_data', 'Aspect Data: ');
-        $form .= '<br />';
-        $form .= \Form::textarea('aspect_data', $aspect->aspect_data);
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('aspect_source', 'Source: ');
-        $form .= \Form::text('aspect_source', $aspect->aspect_source);
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('hidden', 'Hidden?: ');
-        if ($aspect->hidden) {
-            $form .= \Form::checkbox('hidden', '1', true);
-        } else {
-            $form .= \Form::checkbox('hidden', '1');
-        }
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('file_upload', 'File Upload: ');
-        $form .= \Form::file('file_upload');
-        $form .= '</p>';
-
-        $form .= $aspect->notes_fields();
-
-        $form .= '<p>' . \Form::submit('Submit', ['class' => 'btn btn-primary']) . '</p>';
-        $form .= \Form::close();
+        $form = \BootForm::horizontal(['url' => '/aspect/'.$id.'/edit', 'method' => 'post', 'files' => true]);
+        $form .= \BootForm::hidden('aspect_id', $aspect->id);
+        $form .= \BootForm::hidden('aspect_type', $aspect->aspect_type()->id);
+        $form .= \BootForm::text('title', 'Title', $aspect->title);
+        $form .= \BootForm::textarea('aspect_data', 'Aspect Data', $aspect->aspect_data);
+        $form .= \BootForm::text('aspect_source', 'Source', $aspect->aspect_source);
+        $form .= \BootForm::checkbox('hidden', 'Hidden?', $aspect->hidden);
+        $form .= \BootForm::file('file_upload');
+        $form .= $this->notes_fields();
+        $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
+        $form .= \BootForm::close();
         return $form;
     }
 
@@ -266,7 +254,7 @@ class Aspect extends Model
     {
         //
     }
-    
+
     /*
 	   Below, we're going to prototype some pre- and post-save hooks that can be overridden by child
 	   classes, such that we can do some manipulations on the data before we save it if we want.

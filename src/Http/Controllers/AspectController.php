@@ -40,7 +40,7 @@ class AspectController extends Controller
     public function create($subject_id)
     {
         $subject = Subject::find($subject_id);
-        $back_to_subject = '<p style="float:right;"><a href="/subject/'.$subject_id.'" class="btn btn-default" > << Return to '.$subject->name.'</a></p>';
+        $back_to_subject = '<p style="float:right;"><a href="/subject/'.$subject_id.'" class="btn btn-default" > << Return to '.$subject->name.'</a></p><hr style="clear:both;" />';
         $aspect = new Aspect;
         $form = $back_to_subject . $aspect->create_form($subject_id);
         return view('forms.basic', ['form' => $form, 'title'=>'Create a new Aspect']);
@@ -50,7 +50,7 @@ class AspectController extends Controller
     public function create_with_type($subject_id, $aspect_type_id)
     {
         $subject = Subject::find($subject_id);
-        $back_to_subject = '<p style="float:right;"><a href="/subject/'.$subject_id.'" class="btn btn-default"> << Return to '.$subject->name.'</a></p>';
+        $back_to_subject = '<p style="float:right; clear:both;"><a href="/subject/'.$subject_id.'" class="btn btn-default"> << Return to '.$subject->name.'</a></p><hr style="clear:both;" />';
         $custom_aspect_type = AspectFactory::make_from_aspect_type($aspect_type_id);
         $customform = $back_to_subject . $custom_aspect_type->create_form($subject_id, $aspect_type_id);
         return view('forms.basic', ['form' => $customform, 'title'=>'Create a new '.$custom_aspect_type->aspect_type()->aspect_name.' Aspect']);
