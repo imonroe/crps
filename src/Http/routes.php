@@ -25,6 +25,8 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 );
 
                 Route::get('/subject', 'SubjectController@index');  // subject index
+                Route::get('/codex', 'SubjectController@index');  //codex alias
+
                 Route::get('/subject/create', 'SubjectController@create'); // new subject form
                 Route::get('/subject/create/{subject_type_id}', 'SubjectController@create'); // new subject form
                 Route::get('/subject/create_from_search/{query}', 'SubjectController@create_from_search'); // new subject form
@@ -33,6 +35,8 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::get('/subject/{id}/edit', 'SubjectController@edit');  // edit subject form
                 Route::post('/subject/{id}/edit', 'SubjectController@update');  // edit subject form handler
                 Route::get('/subject/{id}/delete', 'SubjectController@destroy');  // delete subject form handler
+                Route::get('/subjects/codex', 'SubjectController@get_codex_array');
+                Route::get('/subjects/codex/{subject_id}', 'SubjectController@get_codex_array');
 
                 // Subject type routes:
                 Route::get('/subject_type', 'SubjectTypeController@index');  // aspect_type index

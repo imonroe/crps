@@ -10,7 +10,6 @@ namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
 use imonroe\crps\Http\Controllers\SearchController;
 use imonroe\crps\Subject;
-use imonroe\crps\SubjectType;
 use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
 use imonroe\crps\AspectFactory;
@@ -38,28 +37,25 @@ class SubjectController extends Controller
     public function index()
     {
         //$subjects = Subject::all();
-        $directory = SubjectType::directory();
-        return view('subject.index', ['title' => 'Data Store', 'directory' => $directory ]);
+        //$directory = SubjectType::directory();
+        $codex_array = self::get_codex_array();
+        return view('subject.index', ['title' => 'Codex', 'codex_array' => $codex_array ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creatin, g a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($subject_type_id = '')
+    public function create()
     {
-        $subject_types = SubjectType::get_options_array();
+
         $form = '';
-        $form .= \Form::open(['url' => '/subject/create', 'method' => 'post']);
-        $form .= '<p>';
-        $form .= \Form::label('name', 'Subject Name: ');
-        $form .= \Form::text('name');
-        $form .= '</p>';
-        $form .= '<p>';
-        $form .= \Form::label('subject_type', 'Subject Type: ');
-        $form .= \Form::select('subject_type', $subject_types, $subject_type_id);
-        $form .= '</p>';
+        $form .= \BootForm::open(['url' => '/subject/create', 'method' => 'post']);
+
+        $form .= \BootForm::text('name', 'Subject Name');
+
+
         $form .= '<p>' . \Form::submit('Submit') . '</p>';
         $form .= \Form::close();
         return view('forms.basic', ['form' => $form, 'title'=>'Create a new Subject']);
@@ -135,7 +131,24 @@ class SubjectController extends Controller
     public function show($id)
     {
         $subject = Subject::findOrFail($id);
-        return view('subject.show', ['subject'=>$subject]);
+
+        // We want a little information about the parent, if it's available.
+        $parent_id = $subject->parent_id;
+        $parent_name = '';
+        if ($parent_id > 0){
+            $parent_subject = Subject::findOrFail($parent_id);
+            $parent_name = $parent_subject->name;
+        }
+        $parent = ['parent_id' => $parent_id, 'parent_name'=>$parent_name];
+
+        $codex = $subject->directory_array();
+        if (!empty($codex['children'])){
+          $menu = $codex['children'];
+        } else {
+          $menu = false;
+        }
+
+        return view('subject.show', ['subject'=>$subject, 'parent'=>$parent, 'codex' => $menu  ] );
     }
 
 	public function coldreader_homepage()
@@ -153,20 +166,23 @@ class SubjectController extends Controller
     public function edit($id)
     {
         $subject = Subject::findOrFail($id);
-        $subject_types = SubjectType::get_options_array();
-        $form = '<p>Your subject is: '.$subject->name .'</p>';
+
+        $currently_selected_array = $subject->parent_subjectids_array();
+        array_pop($currently_selected_array);
+        $currently_selected = htmlspecialchars( json_encode( $currently_selected_array ) );
+
+        $menu = htmlspecialchars( json_encode( Subject::codex_array( $id, true) ) );
+
         $form = '';
-        $form .= \Form::open(['url' => '/subject/'.$id.'/edit', 'method' => 'post']);
-        $form .= '<p>';
-        $form .= \Form::label('name', 'Subject Name: ');
-        $form .= \Form::text('name', $subject->name);
-        $form .= '</p>';
-        $form .= '<p>';
-        $form .= \Form::label('subject_type', 'Subject Type: ');
-        $form .= \Form::select('subject_type', $subject_types, $subject->subject_type);
-        $form .= '</p>';
-        $form .= '<p>' . \Form::submit('Submit') . '</p>';
-        $form .= \Form::close();
+        $form .= \BootForm::open(['url' => '/subject/'.$id.'/edit', 'method' => 'post']);
+        $form .= \BootForm::text('name', 'Subject Name', $subject->name);
+        $form .= \BootForm::label('parent_id_label', 'Parent Subject');
+        $form .= '<subject-cascader :menu="'.$menu.'" :currently-selected="'.$currently_selected.'"></subject-cascader>';
+        $form .= '';
+        $form .= \BootForm::textarea('description', 'Subject Description', $subject->description);
+        $form .= '<p>Created at: '.$subject->created_at.'<br />Updated at:'.$subject->updated_at.'</p>';
+        $form .= \BootForm::submit('Submit') . '</p>';
+        $form .= \BootForm::close();
         return view('forms.basic', ['form' => $form, 'title'=>'Edit '.$subject->name]);
     }
 
@@ -181,7 +197,8 @@ class SubjectController extends Controller
     {
         $new_subject = Subject::findOrFail($id);
         $new_subject->name = $request->input('name');
-        $new_subject->subject_type = $request->input('subject_type');
+        $new_subject->parent_id = $request->input('parent_id');
+        $new_subject->description = $request->input('description');
         $new_subject->save();
         $request->session()->flash('message', 'Subject updated.');
         //return view('subject.show', ['subject'=> $new_subject]);
@@ -197,7 +214,9 @@ class SubjectController extends Controller
     public function destroy(Request $request, $id)
     {
         $new_subject = Subject::findOrFail($id);
-        $subject_type = $new_subject->subject_type();
+        foreach ($new_subject->aspects() as $a){
+          $a->delete();
+        }
         $new_subject->delete();
         $request->session()->flash('message', 'Subject deleted.');
         return redirect('/subject_type/'.$subject_type->id);
@@ -222,6 +241,16 @@ class SubjectController extends Controller
             array_push($a_json, $a_json_row);
         }
         return response()->json($a_json);
+    }
+
+    public static function get_codex_array($subject_id = null){
+      if ($subject_id){
+        $subject = Subject::findOrFail($subject_id);
+        $output = $subject->directory_array();
+      } else {
+        $output = Subject::codex_array();
+      }
+      return $output;
     }
 
 
