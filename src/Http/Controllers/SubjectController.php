@@ -47,17 +47,26 @@ class SubjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($parent_id=null)
     {
-
+        $menu = htmlspecialchars(json_encode(Subject::codex_array(false, true)));
+        if ($parent_id){
+            // we'll need a little information about the parent.
+            $parent = Subject::find($parent_id);
+            $currently_selected = htmlspecialchars( json_encode( $parent->parent_subjectids_array() ) );
+        } else {
+          $currently_selected = htmlspecialchars(json_encode(array("")));
+        }
         $form = '';
-        $form .= \BootForm::open(['url' => '/subject/create', 'method' => 'post']);
-
+        $form = \BootForm::horizontal(['url' => '/subject/create', 'method' => 'post']);
+        $form .= '<div class="form-group "><label for="parent_id" class="control-label col-sm-2 col-md-3">Parent Subject</label>';
+        $form .= '<div class="col-sm-2 col-md-3">';
+        $form .= '<subject-cascader :menu="'.$menu.'" :currently-selected="'.$currently_selected.'"></subject-cascader>';
+        $form .= '</div></div>';
         $form .= \BootForm::text('name', 'Subject Name');
-
-
-        $form .= '<p>' . \Form::submit('Submit') . '</p>';
-        $form .= \Form::close();
+        $form .= \BootForm::textarea('description', 'Description');
+        $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
+        $form .= \BootForm::close();
         return view('forms.basic', ['form' => $form, 'title'=>'Create a new Subject']);
     }
 
@@ -116,7 +125,6 @@ class SubjectController extends Controller
 
         $new_subject = new Subject;
         $new_subject->name = $request->input('name');
-        $new_subject->subject_type = !empty($request->input('subject_type')) ? $request->input('subject_type') : 0 ;
         $new_subject->save();
         $request->session()->flash('message', 'Subject saved.');
         return redirect('/subject/'.$new_subject->id);

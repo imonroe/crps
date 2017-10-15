@@ -15,7 +15,7 @@ class PopulateInitialDatabase extends Migration
     public function up()
     {
 		// Create the basic Aspect Types
-    /*
+
     DB::table('aspect_types')->insert([
 			['aspect_name' => 'File Upload', 'aspect_description' => 'An uploaded file', 'is_viewable' => 1 ],
 			['aspect_name' => 'Image', 'aspect_description' => 'An image file', 'is_viewable' => 1 ],
@@ -28,7 +28,8 @@ class PopulateInitialDatabase extends Migration
 		]);
 
 		// create a Front Page subject under the configuration subject type
-		DB::table('subjects')->insert([
+    /*
+    DB::table('subjects')->insert([
 			['name' => 'Front Page Aspects'],
 		]);
     */
