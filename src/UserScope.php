@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Scopes;
+namespace imonroe\crps;
 
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Model;
