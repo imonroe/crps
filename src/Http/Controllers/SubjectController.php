@@ -161,7 +161,7 @@ class SubjectController extends Controller
 
 	public function coldreader_homepage()
 	{
-		$subject = Subject::where('name', '=', 'Coldreader Home Page')->first();
+		$subject = Subject::where('name', '=', 'Dashboard')->first();
 		 return view('subject.show', ['subject'=>$subject]);
 	}
 
