@@ -9,6 +9,15 @@ class Subject extends Model
 {
     protected $table = 'subjects';
 
+    // Make sure we use a global scope, to ensure we only see our
+    // own data.
+    // https://laravel.com/docs/5.5/eloquent#collections
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new UserScope);
+    }
+
     public function aspects()
     {
         return $this->belongsToMany(Aspect::class);

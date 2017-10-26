@@ -33,6 +33,15 @@ class Aspect extends Model
         //$this->aspect_notes = $this->notes_schema();
     }
 
+    // Make sure we use a global scope, to ensure we only see our
+    // own data.
+    // https://laravel.com/docs/5.5/eloquent#collections
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new UserScope);
+    }
+
     /**
     * If you want to save metadata fields for this array, just set up the schema
     * you want to use here.  When the Aspect is saved, the array will be JSON-ified

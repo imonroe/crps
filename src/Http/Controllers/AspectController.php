@@ -8,6 +8,7 @@ use imonroe\crps\Aspect;
 use imonroe\crps\AspectFactory;
 use imonroe\crps\AspectType;
 use imonroe\crps\Subject;
+use Illuminate\Support\Facades\Auth;
 
 class AspectController extends Controller
 {
@@ -102,6 +103,8 @@ class AspectController extends Controller
         $aspect->title = (!empty($request->input('title'))) ? $request->input('title') : '';
         // a default display weight of 99 will always list the new aspect first.
         $aspect->display_weight = 99;
+        // Who does this aspect belong to?
+        $aspect->user = Auth::id();
         // fire the pre-save hook, if it's there.
         $aspect->pre_save($request);
         // Save the record to the database

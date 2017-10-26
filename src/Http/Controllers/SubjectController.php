@@ -16,6 +16,7 @@ use imonroe\crps\AspectFactory;
 use Illuminate\Http\Response;
 use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubjectController extends Controller
 {
@@ -125,6 +126,9 @@ class SubjectController extends Controller
 
         $new_subject = new Subject;
         $new_subject->name = $request->input('name');
+        $new_subject->description = $request->input('description');
+        $new_subject->parent_id = $request->input('parent_id');
+        $new_subject->user = Auth::id();
         $new_subject->save();
         $request->session()->flash('message', 'Subject saved.');
         return redirect('/subject/'.$new_subject->id);
