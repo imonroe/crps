@@ -10,7 +10,7 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 use Carbon\Carbon;
 use imonroe\ana\Ana;
 
-class Aspect extends Hyn\Tenancy\Abstracts\TenantModel
+class Aspect extends \Hyn\Tenancy\Abstracts\TenantModel
 {
     protected $table = 'aspects';
     protected $fillable = ['aspect_type', 'title'];

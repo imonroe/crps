@@ -5,7 +5,7 @@ namespace imonroe\crps;
 use Illuminate\Database\Eloquent\Model;
 use imonroe\crps\Aspect;
 
-class AspectType extends Hyn\Tenancy\Abstracts\TenantModel
+class AspectType extends \Hyn\Tenancy\Abstracts\TenantModel
 {
     public function aspects()
     {
