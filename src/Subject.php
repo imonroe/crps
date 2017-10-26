@@ -5,7 +5,7 @@ namespace imonroe\crps;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
-class Subject extends \Hyn\Tenancy\Abstracts\TenantModel
+class Subject extends Model
 {
     protected $table = 'subjects';
 

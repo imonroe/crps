@@ -4,7 +4,7 @@ namespace imonroe\crps;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SubjectType extends \Hyn\Tenancy\Abstracts\TenantModel
+class SubjectType extends Model
 {
     //
     public static function directory()
