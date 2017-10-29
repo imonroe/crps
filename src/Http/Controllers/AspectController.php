@@ -98,6 +98,7 @@ class AspectController extends Controller
             } else {
               $filepath = $file->store('public');
             }
+            dd($filepath);
             $url = Storage::url($filepath);
             $new_data = $url;
         }
