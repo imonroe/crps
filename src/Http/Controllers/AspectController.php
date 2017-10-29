@@ -88,7 +88,16 @@ class AspectController extends Controller
         if ($request->hasFile('file_upload')) {
             $file_upload = true;
             $file = $request->file('file_upload');
-            $filepath = $file->store('public');
+
+            // support for per-user cloud Storage
+            $user = $request->user();
+            if (!empty($user->storage)){
+              $filepath = $file->store(
+                $user->storage, 's3'
+              );
+            } else {
+              $filepath = $file->store('public');
+            }
             $url = Storage::url($filepath);
             $new_data = $url;
         }
