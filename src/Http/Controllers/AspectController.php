@@ -57,6 +57,26 @@ class AspectController extends Controller
         return view('forms.basic', ['form' => $customform, 'title'=>'Create a new '.$custom_aspect_type->aspect_type()->aspect_name.' Aspect']);
     }
 
+    public function handle_file(Request $request){
+      // support for per-user cloud Storage
+
+
+
+      /*
+      $user = Auth::user();
+      if (!empty($user->storage)){
+        $filepath = $file->store(
+          $user->storage, 's3'
+        );
+      } else {
+        $filepath = $file->store('public');
+      }
+      dd($filepath);
+      return Storage::url($filepath);
+      */
+
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -84,30 +104,12 @@ class AspectController extends Controller
 
         // Sometimes, we'll have a file attached.
         // In that case, we're going to store the file title in the aspect data, and the file path in the aspect_source fields.
-        $file_upload = false;
+        $file_url = false;
         if ($request->hasFile('file_upload')) {
-            $file_upload = true;
-            $file = $request->file('file_upload');
-
-            // support for per-user cloud Storage
-            $user = $request->user();
-            if (!empty($user->storage)){
-              $filepath = $file->store(
-                $user->storage, 's3'
-              );
-            } else {
-              $filepath = $file->store('public');
-            }
-            dd($filepath);
-            $url = Storage::url($filepath);
-            $new_data = $url;
+            $aspect->addMediaFromRequest('file_upload')->toMediaCollection($request->input('media_collection'));
         }
 
-        if ($file_upload) {
-            $aspect->aspect_source = $new_data;
-        } else {
-            $aspect->aspect_source = $request->input('aspect_source');
-        }
+        $aspect->aspect_source = $request->input('aspect_source');
 
         $aspect->hidden = $request->input('hidden');
         $aspect->title = (!empty($request->input('title'))) ? $request->input('title') : '';

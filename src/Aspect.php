@@ -7,11 +7,17 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use Spatie\MediaLibrary\Media;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Carbon\Carbon;
 use imonroe\ana\Ana;
 
-class Aspect extends Model
+
+class Aspect extends Model implements HasMediaConversions
 {
+    use HasMediaTrait;
+
     protected $table = 'aspects';
     protected $fillable = ['aspect_type', 'title'];
     protected $keep_history = true;
@@ -41,6 +47,17 @@ class Aspect extends Model
         parent::boot();
         static::addGlobalScope(new UserScope);
     }
+
+    // We are using the Spatie MediaLibrary to handle file uploads.
+    // Here, we register a conversion that will create a thumbnail version
+    // of anything that's uploaded to the 'images' collection.
+    public function registerMediaConversions(Media $media = null)
+   {
+       $this->addMediaConversion('thumb')
+             ->width(368)
+             ->height(232)
+             ->performOnCollections('images');
+   }
 
     /**
     * If you want to save metadata fields for this array, just set up the schema
@@ -152,57 +169,10 @@ class Aspect extends Model
         return $output;
     }
 
-    public function create_form_OLD($subject_id, $aspect_type_id = null)
-    {
-        $form = \Form::open(['url' => '/aspect/create', 'method' => 'post', 'files' => true]);
-        $form .= \Form::hidden('subject_id', $subject_id);
-
-        if (!is_null($aspect_type_id)) {
-            $form .= \Form::hidden('aspect_type', $aspect_type_id);
-        } else {
-            $form .= '<p>';
-            $form .= \Form::label('aspect_type', 'Aspect Type: ');
-            $form .= \Form::select('aspect_type', AspectType::get_options_array());
-            $form .= ' (<a href="/aspect_type/create">Add a new Aspect Type</a>)';
-            $form .= '</p>';
-        }
-
-        $form .= '<p>';
-        $form .= \Form::label('title', 'Title: ');
-        $form .= \Form::text('title');
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('aspect_data', 'Aspect Data: ');
-        $form .= '<br />';
-        $form .= \Form::textarea('aspect_data');
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('aspect_source', 'Source: ');
-        $form .= \Form::text('aspect_source');
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('hidden', 'Hidden?: ');
-        $form .= \Form::checkbox('hidden', '1');
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('file_upload', 'File Upload: ');
-        $form .= \Form::file('file_upload');
-        $form .= '</p>';
-
-        $form .= $this->notes_fields();
-
-        $form .= '<p>' . \Form::submit('Submit', ['class' => 'btn btn-primary']) . '</p>';
-        $form .= \Form::close();
-        return $form;
-    }
-
     public function create_form($subject_id, $aspect_type_id = null){
       $form = \BootForm::horizontal(['url' => '/aspect/create', 'method' => 'post', 'files' => true]);
       $form .= \BootForm::hidden('subject_id', $subject_id);
+      $form .= \BootForm::hidden('media_collection', 'uploads');
       if (!is_null($aspect_type_id)) {
           $form .= \BootForm::hidden('aspect_type', $aspect_type_id);
       } else {
