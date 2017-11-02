@@ -10,6 +10,7 @@ use imonroe\crps\AspectType;
 use imonroe\crps\Subject;
 use Illuminate\Support\Facades\Auth;
 use App\MimeUtils;
+use Validator;
 
 class AspectController extends Controller
 {
