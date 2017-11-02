@@ -103,14 +103,12 @@ class AspectController extends Controller
         }
 
         // Sometimes, we'll have a file attached.
-        // In that case, we're going to store the file title in the aspect data, and the file path in the aspect_source fields.
-        $file_url = false;
+        // In that case, we're going to store the file using the Spatie medialibrary software.
         if ($request->hasFile('file_upload')) {
             $aspect->addMediaFromRequest('file_upload')->toMediaCollection($request->input('media_collection'));
         }
 
         $aspect->aspect_source = $request->input('aspect_source');
-
         $aspect->hidden = $request->input('hidden');
         $aspect->title = (!empty($request->input('title'))) ? $request->input('title') : '';
         // a default display weight of 99 will always list the new aspect first.
@@ -168,17 +166,19 @@ class AspectController extends Controller
     {
         $aspect = Aspect::findOrFail($id);
 
-        //fire pre-update if available;
+        // fire pre-update if available
         $aspect->pre_update($request);
 
         $aspect->aspect_type = $request->input('aspect_type');
         $aspect->aspect_data = $request->input('aspect_data');
 
+        // Get the settings array.
         $settings_array = (!is_null($aspect->aspect_notes)) ? json_decode($aspect->aspect_notes, true) : json_decode($aspect->notes_schema(), true);
-
+        // The stuff that came in with the request.
         $request_array = $request->all();
+        // What the schema of settings should look like, based on the aspect type.
         $schema_array = json_decode($aspect->notes_schema(), true);
-
+        // iterate through each of the settings called for in the schema, and set it if it's in the request.
         if (is_array($schema_array)) {
             foreach ($schema_array as $key => $setting){
                 $setting = 'settings_'.$key;
@@ -189,33 +189,25 @@ class AspectController extends Controller
                 }
             }
         }
+        // put your settings array into the aspect notes field.
         $aspect->aspect_notes = $settings_array;
+
         $aspect->title = (!empty($request->input('title'))) ? $request->input('title') : '';
 
         // Sometimes, we'll have a file attached.
-        // In that case, we're going to store the file title in the aspect data, and the file path in the aspect_source fields.
-        $file_upload = false;
+        // In that case, we're going to store the file using the Spatie medialibrary software.
         if ($request->hasFile('file_upload')) {
-            $file_upload = true;
-            $file = $request->file('file_upload');
-            $filepath = $file->store('public');
-            $url = Storage::url($filepath);
-            $new_data = $url;
+            $aspect->addMediaFromRequest('file_upload')->toMediaCollection($request->input('media_collection'));
         }
 
-        if ($file_upload) {
-            $aspect->aspect_source = $new_data;
-        } else {
-            $aspect->aspect_source = $request->input('aspect_source');
-        }
-
+        $aspect->aspect_source = $request->input('aspect_source');
         $aspect->hidden = $request->input('hidden');
 
+        // update the aspect record.
         $aspect->update_aspect();
 
-        //fire post_update if available;
+        // fire post_update if available
         $aspect->post_update($request);
-
         $subject = $aspect->subjects()->first();
         $request->session()->flash('message', 'Aspect saved.');
         return redirect('/subject/'.$subject->id);
