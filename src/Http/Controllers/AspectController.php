@@ -9,6 +9,7 @@ use imonroe\crps\AspectFactory;
 use imonroe\crps\AspectType;
 use imonroe\crps\Subject;
 use Illuminate\Support\Facades\Auth;
+use App\MimeUtils;
 
 class AspectController extends Controller
 {
@@ -57,26 +58,6 @@ class AspectController extends Controller
         return view('forms.basic', ['form' => $customform, 'title'=>'Create a new '.$custom_aspect_type->aspect_type()->aspect_name.' Aspect']);
     }
 
-    public function handle_file(Request $request){
-      // support for per-user cloud Storage
-
-
-
-      /*
-      $user = Auth::user();
-      if (!empty($user->storage)){
-        $filepath = $file->store(
-          $user->storage, 's3'
-        );
-      } else {
-        $filepath = $file->store('public');
-      }
-      dd($filepath);
-      return Storage::url($filepath);
-      */
-
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -85,6 +66,26 @@ class AspectController extends Controller
      */
     public function store(Request $request)
     {
+        // Before we do anything else, let's do any validation that is required.
+        if ($request->hasFile('file_upload')) {
+
+          // Set up the MIME types that we'll allow.
+          $allowed_mimes = new MimeUtils;
+          $allowed_mimes->allow_all();
+          $mime_string = 'mimes:' . $allowed_mimes->get_extensions('string');
+
+          $file_validator = Validator::make($request->all(), [
+              'file_upload' => $mime_string
+          ]);
+
+          if ($file_validator->fails()) {
+              return redirect( URL::previous() )
+                          ->withErrors($file_validator)
+                          ->withInput();
+          }
+
+        }
+
         $aspect = AspectFactory::make_from_aspect_type($request->input('aspect_type'));
         $aspect->aspect_data = $request->input('aspect_data');
 
