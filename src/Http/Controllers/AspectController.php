@@ -73,7 +73,11 @@ class AspectController extends Controller
 
           // Set up the MIME types that we'll allow.
           $allowed_mimes = new MimeUtils;
-          $allowed_mimes->allow_all();
+          if (!empty($request->input('mime_type'))){
+            $allowed_mimes->allow( $request->input('mime_type') );
+          } else {
+            $allowed_mimes->allow_all();
+          }
           $mime_string = 'mimes:' . $allowed_mimes->get_extensions('string');
 
           $file_validator = Validator::make($request->all(), [
