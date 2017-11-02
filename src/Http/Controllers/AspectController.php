@@ -11,6 +11,7 @@ use imonroe\crps\Subject;
 use Illuminate\Support\Facades\Auth;
 use App\MimeUtils;
 use Validator;
+use URL;
 
 class AspectController extends Controller
 {
