@@ -17,6 +17,7 @@ use Illuminate\Http\Response;
 use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use GrahamCampbell\Markdown\Facades\Markdown;
 
 class SubjectController extends Controller
 {
@@ -37,8 +38,6 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        //$subjects = Subject::all();
-        //$directory = SubjectType::directory();
         $codex_array = self::get_codex_array();
         return view('subject.index', ['title' => 'Codex', 'codex_array' => $codex_array ]);
     }
@@ -160,7 +159,10 @@ class SubjectController extends Controller
           $menu = false;
         }
 
-        return view('subject.show', ['subject'=>$subject, 'parent'=>$parent, 'codex' => $menu  ] );
+        // If we have a description, we'll treat it like Markdown and pass it to the template.
+        $description = Markdown::convertToHtml($subject->description);
+
+        return view('subject.show', ['subject'=>$subject, 'parent'=>$parent, 'codex' => $menu, 'description' => $description  ] );
     }
 
 	public function coldreader_homepage()
