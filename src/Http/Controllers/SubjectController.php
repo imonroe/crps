@@ -160,7 +160,7 @@ class SubjectController extends Controller
         }
 
         // If we have a description, we'll treat it like Markdown and pass it to the template.
-        $description = Markdown::convertToHtml($subject->description);
+        $description = '<p>' . $subject->description . '</p>';
 
         return view('subject.show', ['subject'=>$subject, 'parent'=>$parent, 'codex' => $menu, 'description' => $description,  ] );
     }
