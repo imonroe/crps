@@ -79,9 +79,10 @@ class AspectController extends Controller
             $allowed_mimes->allow_all();
           }
           $mime_string = 'mimes:' . $allowed_mimes->get_extensions('string');
-
+          // Add an additional parameter setting a max upload size of 50MB.
+          $file_valid = $mime_string . '|max:'.(1024 * 50);
           $file_validator = Validator::make($request->all(), [
-              'file_upload' => $mime_string
+              'file_upload' => $file_valid,
           ]);
 
           if ($file_validator->fails()) {
