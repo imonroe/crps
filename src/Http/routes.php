@@ -82,7 +82,7 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
 
                 // Search routes
                 Route::get('/search', 'SearchController@index');
-                Route::post('/search', 'SearchController@basic_search_handler');
+                Route::post('/search', 'SearchController@show_search_results');
             }
         );
     }

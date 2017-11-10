@@ -44,21 +44,26 @@ class SearchController extends Controller
         return $output;
     }
 
+    public function index(Request $request){
+      // make a basic search page.
+
+    }
+
     /*
     *	The controller function to get all the pieces and generate the view.
     */
     public function show_search_results(Request $request)
     {
-        $query = $request->input('search_form_query');
-        $web_search_results = $this->web_search($query);
-        $google_searcher = new GoogleController;
-        $google_search_results = $google_searcher->google_search($query);
-        $google_drive_results = $google_searcher->search_drive($query);
+        $query = $request->input('query');
+        //$web_search_results = $this->web_search($query);
+        //$google_searcher = new GoogleController;
+        //$google_search_results = $google_searcher->google_search($query);
+        //$google_drive_results = $google_searcher->search_drive($query);
         $subject_results = $this->get_subject_results($query);
         return view(
-            'search.results', ['abstract' => $web_search_results,
-                                       'google_search_results' => $google_search_results,
-                                       'google_drive_results' => $google_drive_results,
+            'search.results', [//'abstract' => $web_search_results,
+                                       //'google_search_results' => $google_search_results,
+                                       //'google_drive_results' => $google_drive_results,
                                        'subject_search_results' => $subject_results,
                                        'title'=>'Search Results for: '.$query,
                                       ]
