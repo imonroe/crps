@@ -5,7 +5,6 @@ $request->session()->flash('message', 'Task was successful!');
 $request->session()->flash('error', 'Something went wrong!');
 */
 
-
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
 use imonroe\crps\Http\Controllers\SearchController;
@@ -216,7 +215,6 @@ class SubjectController extends Controller
         $new_subject->description = $request->input('description');
         $new_subject->save();
         $request->session()->flash('message', 'Subject updated.');
-        //return view('subject.show', ['subject'=> $new_subject]);
         return redirect('/subject/'.$new_subject->id);
     }
 
@@ -240,15 +238,9 @@ class SubjectController extends Controller
     public static function autocomplete(Request $request)
     {
         $term = '%'.$request->input('term').'%';
-        //dd($term);
         $a_json = array();
         $a_json_row = array();
-        //$query = 'SELECT * from subjects where name LIKE :terms ORDER BY name ASC';
-        //$params = ['terms' => $term];
-        //$candidates = \DB::select($query , $params);
-        //dd($candidates);
         $candidates = Subject::where('name', 'like', $term)->orderBy('name')->get();
-        //$candidates = \DB::table('subjects')->where('name', 'like', $term)->orderBy('name')->get();
         foreach ($candidates as $row){
             $a_json_row["id"] = $row->id;
             $a_json_row["value"] = $row->name;
@@ -267,6 +259,5 @@ class SubjectController extends Controller
       }
       return $output;
     }
-
 
 }
