@@ -45,7 +45,7 @@ class crpsServiceProvider extends ServiceProvider
     public function register()
     {
       $this->app->singleton('SearchRegistry', function ($app) {
-          return new imonroe\crps\SearchRegistry($app->make('SearchRegistry'));
+          return new \imonroe\crps\SearchRegistry($app->make('SearchRegistry'));
       });
     }
 }
