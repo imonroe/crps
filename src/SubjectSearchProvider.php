@@ -6,7 +6,7 @@ use imonroe\crps\Subject;
 */
 class SubjectSearchProvider extends \imonroe\crps\SearchProvider {
   public function __construct(){
-    $this->prepend_markup = '<h3 style="clear:both;"> Subjects </h3>'.PHP_EOL;
+    $this->prepend_markup = '<h4 style="clear:both;"> Subjects </h4>'.PHP_EOL;
     $this->results_limit = 25;
     $this->append_markup = '<hr style="clear:both;" />'.PHP_EOL;
   }
@@ -20,7 +20,6 @@ class SubjectSearchProvider extends \imonroe\crps\SearchProvider {
     $markup = '';
     $this->results = Subject::where('name', 'LIKE', '%'.$this->query.'%')->limit($this->results_limit)->get();
     if ($this->results->count() > 0){
-      $markup .= '<h3 style="clear:both;"> Subjects </h3>'.PHP_EOL;
       $markup .= '<ul>'.PHP_EOL;
       foreach ($this->results as $subject){
         $markup .= '<li> <a href="/subject/' . $subject->id . '">' . $subject->name .'</a> </li>'.PHP_EOL;
