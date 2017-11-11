@@ -56,7 +56,7 @@ class SearchController extends Controller
     {
         $query = $request->input('query');
         $search_registry = app()->make('SearchRegistry');
-        $search_results = $search_registry->search($query)
+        $search_results = $search_registry->search($query);
         return view(
             'search.results', ['title'=>'Search Results for: '.$query, 'results_markup' => $search_results, ]
         );
