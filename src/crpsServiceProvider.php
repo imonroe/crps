@@ -6,6 +6,8 @@ use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
 use imonroe\crps\Subject;
 use imonroe\crps\SubjectType;
+use imonroe\crps\SearchRegistry;
+use imonroe\crps\SubjectSearchProvider;
 use Illuminate\Support\ServiceProvider;
 
 class crpsServiceProvider extends ServiceProvider
@@ -29,6 +31,10 @@ class crpsServiceProvider extends ServiceProvider
 
         // Routes:
         $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
+
+        $search_registry = app()->make('SearchRegistry');
+        $subject_searcher = new SubjectSearchProvider;
+        $search_registry->register_search_class($subject_searcher, 99);
     }
 
     /**
@@ -38,5 +44,8 @@ class crpsServiceProvider extends ServiceProvider
      */
     public function register()
     {
+      $this->app->singleton('imonroe\crps\SearchRegistry', function ($app) {
+          return new imonroe\crps\SearchRegistry($app->make('SearchRegistry'));
+      });
     }
 }
