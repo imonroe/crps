@@ -54,12 +54,12 @@ class AspectSearchProvider extends \imonroe\crps\SearchProvider {
       // Run through the $results_array, and if we find a subject ID that matches, populate
       // some temporary variables.
       foreach ($results_array as $potentially_relevant){
-        if ($potentially_relevant->$subject_id = $subject_id){
+        if ($potentially_relevant->subject_id = $subject_id){
           // most of this is repetitive, so we don't care that we are overrideing it each time.
-          $sid = $potentially_relevant->$subject_id;
-          $stitle = $potentially_relevant->$subject_title;
-          $atitle = $potentially_relevant->$aspect_title;
-          $sdesc = $potentially_relevant->$subject_description;
+          $sid = $potentially_relevant->subject_id;
+          $stitle = $potentially_relevant->subject_title;
+          $atitle = $potentially_relevant->aspect_title;
+          $sdesc = $potentially_relevant->subject_description;
           $relevant_aspects[] = $atitle;
         }
       }
