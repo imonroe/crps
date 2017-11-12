@@ -75,7 +75,7 @@ class AspectSearchProvider extends \imonroe\crps\SearchProvider {
     // We have collected all the data we need.
     $this->results = $results;
 
-    if ($this->results->count() > 0){
+    if ( count($this->results) > 0 ){
       $markup .= '<ul>'.PHP_EOL;
       foreach ($this->results as $subject){
         $markup .= '<li>'.PHP_EOL;
