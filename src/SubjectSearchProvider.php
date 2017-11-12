@@ -25,8 +25,11 @@ class SubjectSearchProvider extends \imonroe\crps\SearchProvider {
         $markup .= '<li> <a href="/subject/' . $subject->id . '">' . $subject->name .'</a> </li>'.PHP_EOL;
       }
       $markup .= '</ul>'.PHP_EOL;
+      $this->results_markup = $markup;
+      return $this->prepend_markup . $this->results_markup . $this->append_markup . PHP_EOL;
+    } else {
+      return $markup;
     }
-    $this->results_markup = $markup;
-    return $this->prepend_markup . $this->results_markup . $this->append_markup . PHP_EOL;
+
   }
 }

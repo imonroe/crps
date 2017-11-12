@@ -34,7 +34,9 @@ class crpsServiceProvider extends ServiceProvider
 
         $search_registry = app()->make('SearchRegistry');
         $subject_searcher = new SubjectSearchProvider;
-        $search_registry->register_search_class($subject_searcher, 99);
+        $aspect_searcher = new AspectSearchProvider;
+        $search_registry->register_search_class($subject_searcher, 98);
+        $search_registry->register_search_class($aspect_searcher, 99);
     }
 
     /**
