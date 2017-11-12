@@ -68,7 +68,7 @@ class AspectSearchProvider extends \imonroe\crps\SearchProvider {
         'subject_id' => $subject_id,
         'subject_title' => $stitle,
         'subject_description' => $sdesc,
-        'aspects' => $relevant_aspects;
+        'aspects' => $relevant_aspects,
       );
     }
 
