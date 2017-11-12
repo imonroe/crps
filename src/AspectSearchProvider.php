@@ -34,11 +34,11 @@ class AspectSearchProvider extends \imonroe\crps\SearchProvider {
       ON aspect_subject.subject_id = subjects.id
       WHERE aspects.user = :user
       AND (
-	 	     aspects.aspect_data LIKE :query
-		     OR aspects.title LIKE :query
+	 	     aspects.aspect_data LIKE :query1
+		     OR aspects.title LIKE :query2
       )";
 
-    $results_array = DB::select($sql, ['user' => $id, 'query' => '%'.$query.'%']);
+    $results_array = DB::select($sql, ['user' => $id, 'query1' => '%'.$query.'%', 'query2' => '%'.$query.'%']);
     // Extract the unique subject ids.
     $subject_ids_array = array_unique( array_column($results_array, 'subject_id') );
     // This is our final results array.
