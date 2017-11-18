@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Validator;
+use Illuminate\Validation\Rule;
 
 class SubjectController extends Controller
 {
