@@ -118,15 +118,13 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate(
-            $request, [
-              'name' => Rule::unique('subjects')->where(function ($query) {
-                  return $query->where( 'user', Auth::id() );
-              }),
-            ]
 
+        Validator::make($request->all(), [
+          'name' => Rule::unique('subjects')->where(function ($query) {
+              return $query->where( 'user', Auth::id() );
+          }),
+        ])->validate();
 
-        );
 
         $new_subject = new Subject;
         $new_subject->name = $request->input('name');
