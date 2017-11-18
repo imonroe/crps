@@ -17,6 +17,7 @@ use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use Illuminate\Contracts\Validation\Rule;
 
 class SubjectController extends Controller
 {
