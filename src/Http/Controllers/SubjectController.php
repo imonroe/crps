@@ -118,8 +118,12 @@ class SubjectController extends Controller
     {
         $this->validate(
             $request, [
-            'name' => 'required|unique:subjects',
+              'name' => Rule::unique('subjects')->where(function ($query) {
+                  return $query->where( 'user', Auth::id() );
+              }),
             ]
+
+
         );
 
         $new_subject = new Subject;
