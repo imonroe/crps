@@ -44,22 +44,11 @@ class SubjectTypeController extends Controller
     {
         $form = '';
         $form .= \BootForm::open(['url' => '/subject_type/create', 'method' => 'post']);
-        $form .= '<p>';
-        $form .= \BootForm::label('type_name', 'Subject Type Name: ');
-        $form .= \BootForm::text('type_name');
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \BootForm::label('type_description', 'Subject Type Description: ');
-        $form .= \BootForm::text('type_description');
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \BootForm::label('parent_id', 'Parent Subject Type: ');
-        $form .= \BootForm::select('parent_id', SubjectType::options_list());
-        $form .= '</p>';
-
-        $form .= '<p>' . \BootForm::submit('Submit') . '</p>';
+        $form .= \BootForm::text('name', 'Subject Name');
+        $form .= \BootForm::text('type_name', 'Subject Type Name');
+        $form .= \BootForm::text('type_description', 'Subject Type Description');
+        $form .= \BootForm::select('parent_id', 'Parent Subject Type: ', SubjectType::options_list());
+        $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
         $form .= \BootForm::close();
         return view('forms.basic', ['form' => $form, 'title'=>'Create a new Subject Type']);
     }
