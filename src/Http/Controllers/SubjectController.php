@@ -48,7 +48,7 @@ class SubjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($parent_id=null)
+    public function create($parent_id=null, $subject_type_id=null)
     {
         $menu = htmlspecialchars(json_encode(Subject::codex_array(false, true)));
         if ($parent_id){
@@ -58,12 +58,28 @@ class SubjectController extends Controller
         } else {
           $currently_selected = htmlspecialchars(json_encode(array("")));
         }
+
+        $subject_types = htmlspecialchars(json_encode(SubjectType::codex_array(false, true)));
+        if ($subject_type_id){
+          // we'll need a little information about the parent.
+          $st = SubjectType::find($subject_type_id);
+          $currently_selected_type = htmlspecialchars( json_encode( $st->parent_subject_type_ids_array() ) );
+        } else {
+          $currently_selected_type = htmlspecialchars(json_encode(array("")));
+        }
+
         $form = '';
         $form = \BootForm::horizontal(['url' => '/subject/create', 'method' => 'post']);
         $form .= '<div class="form-group "><label for="parent_id" class="control-label col-sm-2 col-md-3">Parent Subject</label>';
         $form .= '<div class="col-sm-2 col-md-3">';
         $form .= '<subject-cascader :menu="'.$menu.'" :currently-selected="'.$currently_selected.'"></subject-cascader>';
         $form .= '</div></div>';
+
+        $form .= '<div class="form-group "><label for="parent_id" class="control-label col-sm-2 col-md-3">Subject Type</label>';
+        $form .= '<div class="col-sm-2 col-md-3">';
+        $form .= '<subject-type-cascader :menu="'.$subject_types.'" :currently-selected="'.$currently_selected_type.'"></subject-cascader>';
+        $form .= '</div></div>';
+
         $form .= \BootForm::text('name', 'Subject Name');
         $form .= \BootForm::textarea('description', 'Description');
         $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
