@@ -7,6 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class SubjectType extends Model
 {
     //
+
+    // Make sure we use a global scope, to ensure we only see our
+    // own data.
+    // https://laravel.com/docs/5.5/eloquent#collections
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new UserScope);
+    }
+    
+
     public static function directory()
     {
         $output = '<ul class="subject_type_directory" id="treeData">'.PHP_EOL;
