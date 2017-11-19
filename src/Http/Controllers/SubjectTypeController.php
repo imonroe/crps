@@ -47,7 +47,7 @@ class SubjectTypeController extends Controller
         $form .= \BootForm::text('name', 'Subject Name');
         $form .= \BootForm::text('type_name', 'Subject Type Name');
         $form .= \BootForm::text('type_description', 'Subject Type Description');
-        $form .= \BootForm::select('parent_id', 'Parent Subject Type: ', SubjectType::options_list());
+        $form .= \Form::select('parent_id', SubjectType::options_list());
         $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
         $form .= \BootForm::close();
         return view('forms.basic', ['form' => $form, 'title'=>'Create a new Subject Type']);
