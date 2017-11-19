@@ -43,24 +43,24 @@ class SubjectTypeController extends Controller
     public function create()
     {
         $form = '';
-        $form .= \Form::open(['url' => '/subject_type/create', 'method' => 'post']);
+        $form .= \BootForm::open(['url' => '/subject_type/create', 'method' => 'post']);
         $form .= '<p>';
-        $form .= \Form::label('type_name', 'Subject Type Name: ');
-        $form .= \Form::text('type_name');
+        $form .= \BootForm::label('type_name', 'Subject Type Name: ');
+        $form .= \BootForm::text('type_name');
         $form .= '</p>';
 
         $form .= '<p>';
-        $form .= \Form::label('type_description', 'Subject Type Description: ');
-        $form .= \Form::text('type_description');
+        $form .= \BootForm::label('type_description', 'Subject Type Description: ');
+        $form .= \BootForm::text('type_description');
         $form .= '</p>';
 
         $form .= '<p>';
-        $form .= \Form::label('parent_id', 'Parent Subject Type: ');
-        $form .= \Form::select('parent_id', SubjectType::options_list());
+        $form .= \BootForm::label('parent_id', 'Parent Subject Type: ');
+        $form .= \BootForm::select('parent_id', SubjectType::options_list());
         $form .= '</p>';
 
-        $form .= '<p>' . \Form::submit('Submit') . '</p>';
-        $form .= \Form::close();
+        $form .= '<p>' . \BootForm::submit('Submit') . '</p>';
+        $form .= \BootForm::close();
         return view('forms.basic', ['form' => $form, 'title'=>'Create a new Subject Type']);
     }
 
@@ -132,15 +132,15 @@ class SubjectTypeController extends Controller
     {
         $subject_type = SubjectType::findOrFail($id);
         $form = '';
-        $form .= \Form::open(['url' => '/subject_type/'.$id.'/edit', 'method' => 'post']);
+        $form .= \BootForm::open(['url' => '/subject_type/'.$id.'/edit', 'method' => 'post']);
         $form .= '<p>';
-        $form .= \Form::label('type_name', 'Subject Type Name: ');
-        $form .= \Form::text('type_name', $subject_type->type_name);
+        $form .= \BootForm::label('type_name', 'Subject Type Name: ');
+        $form .= \BootForm::text('type_name', $subject_type->type_name);
         $form .= '</p>';
 
         $form .= '<p>';
-        $form .= \Form::label('type_description', 'Subject Type Description: ');
-        $form .= \Form::text('type_description', $subject_type->type_description);
+        $form .= \BootForm::label('type_description', 'Subject Type Description: ');
+        $form .= \BootForm::text('type_description', $subject_type->type_description);
         $form .= '</p>';
 
         // You can't be your own grandpa.
@@ -150,12 +150,12 @@ class SubjectTypeController extends Controller
         }
 
         $form .= '<p>';
-        $form .= \Form::label('parent_id', 'Parent Subject Type: ');
-        $form .= \Form::select('parent_id', $parents_options, $subject_type->parent_id);
+        $form .= \BootForm::label('parent_id', 'Parent Subject Type: ');
+        $form .= \BootForm::select('parent_id', $parents_options, $subject_type->parent_id);
         $form .= '</p>';
 
-        $form .= '<p>' . \Form::submit('Submit') . '</p>';
-        $form .= \Form::close();
+        $form .= '<p>' . \BootForm::submit('Submit') . '</p>';
+        $form .= \BootForm::close();
         return view('forms.basic', ['form' => $form, 'title'=>'Edit the '.$subject_type->type_name.' Subject Type']);
     }
 
