@@ -4,6 +4,7 @@ namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use imonroe\crps\SubjectType;
@@ -83,6 +84,8 @@ class SubjectTypeController extends Controller
         $type->type_name = $request->input('type_name');
         $type->type_description = $request->input('type_description');
         $type->parent_id = (int) $request->input('parent_id');
+        // Who does this aspect belong to?
+        $type->user = Auth::id();
         $type->save();
         $request->session()->flash('message', 'Subject Type saved.');
         return redirect('/subject_type/'.$type->id);
