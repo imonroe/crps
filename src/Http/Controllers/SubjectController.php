@@ -9,6 +9,7 @@ namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
 use imonroe\crps\Http\Controllers\SearchController;
 use imonroe\crps\Subject;
+use imonroe\crps\SubjectType;
 use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
 use imonroe\crps\AspectFactory;
