@@ -168,7 +168,7 @@ class SubjectType extends Model
       }
 
       if ($include_subjects){
-        $subjects = $this->subjects();
+        $subjects = Subject::where('subject_type', '=', -1)->get();
         foreach ($subjects as $subject){
           $s = [
             'value' => (string)$subject->id,
@@ -177,7 +177,7 @@ class SubjectType extends Model
           $codex[] = $s;
         }
       }
-      
+
       return $codex;
     }
 
