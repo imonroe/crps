@@ -151,7 +151,7 @@ class SubjectType extends Model
           ]
         ]
     */
-    public static function codex_array( $filter_id=false, $include_subjects=false, $include_root=false ){
+    public static function codex_array( $filter_id=false, $include_root=false, $include_subjects=false ){
       $codex = array();
       // Do we want to include the option of having no subject type?
       if ($include_root){
@@ -172,7 +172,7 @@ class SubjectType extends Model
         foreach ($subjects as $subject){
           $s = [
             'value' => (string)$subject->id,
-            'label' => self::$subject_icon . $subject->name
+            'label' => self::$subject_icon . $subject->name,
           ];
           $codex[] = $s;
         }
