@@ -8,6 +8,9 @@ class SubjectType extends Model
 {
     //
 
+    public $subject_type_icon = '';
+    public $subject_icon = '<i class="fa fa-file" aria-hidden="true"></i>';
+
     // Make sure we use a global scope, to ensure we only see our
     // own data.
     // https://laravel.com/docs/5.5/eloquent#collections
@@ -148,7 +151,7 @@ class SubjectType extends Model
           ]
         ]
     */
-    public static function codex_array( $filter_id=false, $include_root=false ){
+    public static function codex_array( $filter_id=false, $include_subjects=false, $include_root=false ){
       $codex = array();
       // Do we want to include the option of having no subject type?
       if ($include_root){
@@ -158,11 +161,23 @@ class SubjectType extends Model
 
       $root_subject_types = SubjectType::where('parent_id', '=', -1)->get();
       foreach ($root_subject_types as $s){
-        $rs_dir = $s->directory_array( $filter_id );
+        $rs_dir = $s->directory_array( $filter_id, $include_subjects );
         if (!empty($rs_dir)){
-          $codex[] = $s->directory_array( $filter_id );
+          $codex[] = $s->directory_array( $filter_id, $include_subjects );
         }
       }
+
+      if ($include_subjects){
+        $subjects = $this->subjects();
+        foreach ($subjects as $subject){
+          $s = [
+            'value' => (string)$subject->id,
+            'label' => $this->subject_icon . $subject->name
+          ];
+          $codex[] = $s;
+        }
+      }
+      
       return $codex;
     }
 
@@ -172,7 +187,7 @@ class SubjectType extends Model
       This function is used by codex_array() to build the full list of subjects.
 
     */
-    public function directory_array( $filter_id=false ){
+    public function directory_array( $filter_id=false, $include_subjects=false ){
       // we want an array that looks like:
       // $array['value' => (string)$this->id, 'label' => $this->name, 'children' => array() ];
       //dd( (int)$filter_id);
@@ -181,22 +196,39 @@ class SubjectType extends Model
         return null;
       } else {
         $output = array();
-        $output['value'] = (string)$this->id;
-        $output['label'] = $this->type_name;
+        $st_output = array();
+
+        $st_output['value'] = (string)$this->id;
+        $st_output['label'] = $this->subject_type_icon . $this->type_name;
+
         $children = $this->children();
         if ($children){
           $child_array = array();
           foreach ($children as $child){
-            $child_dir = $child->directory_array($filter_id);
+            $child_dir = $child->directory_array($filter_id, $include_subjects);
             if (!is_null($child_dir)){
-                $child_array[] = $child->directory_array($filter_id);
+                $child_array[] = $child->directory_array($filter_id, $include_subjects);
             }
           }
           if (!empty($child_array)){
-            $output['children'] = $child_array;
+            $st_output['children'] = $child_array;
           }
         }
-        return $output;
+
+        if ($include_subjects){
+          $output[] = $st_output;
+          $subjects = $this->subjects();
+          foreach ($subjects as $subject){
+            $s = [
+              'value' => (string)$subject->id,
+              'label' => $this->subject_icon . $subject->name
+            ];
+            $output[] = $s;
+          }
+          return $output;
+        } else {
+          return $st_output;
+        }
       }
     }
 
@@ -217,7 +249,9 @@ class SubjectType extends Model
       return $output;
     }
 
+    public function full_directory(){
 
+    }
 
 
 }
