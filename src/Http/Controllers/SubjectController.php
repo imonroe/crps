@@ -147,7 +147,12 @@ class SubjectController extends Controller
         $new_subject = new Subject;
         $new_subject->name = $request->input('name');
         $new_subject->description = $request->input('description');
-        $new_subject->parent_id = $request->input('parent_id');
+        if (!empty($request->input('parent_id'))){
+          $new_subject->parent_id = $request->input('parent_id');
+        } else {
+          $new_subject->parent_id = -1;
+        }
+
         $new_subject->subject_type = $request->input('subject_type');
         $new_subject->user = Auth::id();
         $new_subject->save();
