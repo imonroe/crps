@@ -8,8 +8,8 @@ class SubjectType extends Model
 {
     //
 
-    public $subject_type_icon = '';
-    public $subject_icon = '<i class="fa fa-file" aria-hidden="true"></i>';
+    public static $subject_type_icon = '';
+    public static $subject_icon = '<i class="fa fa-file" aria-hidden="true"></i>';
 
     // Make sure we use a global scope, to ensure we only see our
     // own data.
