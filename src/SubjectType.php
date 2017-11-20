@@ -172,7 +172,7 @@ class SubjectType extends Model
         foreach ($subjects as $subject){
           $s = [
             'value' => (string)$subject->id,
-            'label' => self::subject_icon . $subject->name
+            'label' => self::$subject_icon . $subject->name
           ];
           $codex[] = $s;
         }
