@@ -229,7 +229,7 @@ class SubjectController extends Controller
         $form .= \BootForm::open(['url' => '/subject/'.$id.'/edit', 'method' => 'post']);
         $form .= \BootForm::text('name', 'Subject Name', $subject->name);
         $form .= \BootForm::label('subject_type_label', 'Subject Type');
-        $form .= '<subject-type-cascader :menu="'.$subject_types.'" :currently-selected="'.$currently_selected_type.'"></subject-cascader>'.PHP_EOL;
+        $form .= '<subject-type-cascader :menu="'.$subject_types.'" :currently-selected="'.$currently_selected_type.'"></subject-type-cascader>'.PHP_EOL;
         $form .= \BootForm::textarea('description', 'Subject Description', $subject->description);
         $form .= '<p>Created at: '.$subject->created_at.'<br />Updated at:'.$subject->updated_at.'</p>';
         $form .= \BootForm::submit('Submit') . '</p>';
