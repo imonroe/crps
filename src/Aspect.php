@@ -262,6 +262,7 @@ class Aspect extends Model implements HasMediaConversions
     }
 
     public function can_edit(){
+      dd($this);
       if ($this->editable == 1){
         return true;
       } else {
