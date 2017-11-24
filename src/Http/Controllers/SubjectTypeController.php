@@ -109,7 +109,7 @@ class SubjectTypeController extends Controller
                                           'parent_type_id' => $parent_type_id,
                                           'children' => $children,
                                           'subjects' => $paginate,
-                                          'codex' => $codex;
+                                          'codex' => $codex,
                                          ]
         );
     }
