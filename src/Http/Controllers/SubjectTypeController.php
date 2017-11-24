@@ -96,6 +96,8 @@ class SubjectTypeController extends Controller
         $parent_type_id = !empty($parent_type->id) ? $parent_type->id : false;
         $all_subjects = $type->get_all_subjects();
 
+        $codex = SubjectType::codex_array(false, true);
+
         $page = Paginator::resolveCurrentPage('page') ?: 1;
         $perPage = 25;
         $paginate = new LengthAwarePaginator($all_subjects->forPage($page, $perPage), $all_subjects->count(), $perPage, $page, ['path'=>url('/subject_type/'.$id)]);
@@ -107,6 +109,7 @@ class SubjectTypeController extends Controller
                                           'parent_type_id' => $parent_type_id,
                                           'children' => $children,
                                           'subjects' => $paginate,
+                                          'codex' => $codex;
                                          ]
         );
     }
