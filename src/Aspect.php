@@ -108,6 +108,17 @@ class Aspect extends Model implements HasMediaConversions
         return new AspectCollection($models);
     }
 
+
+    /*
+      MANUAL LOAD IMPORTANT INFORMATION:
+      If you add new columns to the Aspect table (via migration, etc.)
+      You must ensure that the new columns are reflected in the manual_load
+      function, or they will not be available on your model.
+
+      Remember, we are building custom collections of overridded aspects,
+      and to support that, we have to load the data ourselves.  This is a feature,
+      not a bug.
+    */
     public function manual_load()
     {
         // We anticipate here that we have an empty model, with just the ID set.
@@ -127,6 +138,8 @@ class Aspect extends Model implements HasMediaConversions
             $this->updated_at = $a_data->updated_at;
             $this->display_weight = $a_data->display_weight;
             $this->folded = $a_data->folded;
+            $this->user = $a_data->user;
+            $this->editable = $a_data->editable;
         }
     }
 
