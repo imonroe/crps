@@ -43,7 +43,7 @@ class SubjectTypeController extends Controller
     public function create()
     {
         $form = '';
-        $form .= \BootForm::open(['url' => '/subject_type/create', 'method' => 'post']);
+        $form .= \BootForm::horizontal(['url' => '/subject_type/create', 'method' => 'post']);
         $form .= \BootForm::text('name', 'Subject Name');
         $form .= \BootForm::text('type_name', 'Subject Type Name');
         $form .= \BootForm::text('type_description', 'Subject Type Description');
@@ -121,7 +121,7 @@ class SubjectTypeController extends Controller
     {
         $subject_type = SubjectType::findOrFail($id);
         $form = '';
-        $form .= \BootForm::open(['url' => '/subject_type/'.$id.'/edit', 'method' => 'post']);
+        $form .= \BootForm::horizontal(['url' => '/subject_type/'.$id.'/edit', 'method' => 'post']);
         $form .= '<p>';
         $form .= \BootForm::label('type_name', 'Subject Type Name: ');
         $form .= \BootForm::text('type_name', $subject_type->type_name);

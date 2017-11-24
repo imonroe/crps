@@ -24,15 +24,16 @@ use Illuminate\Validation\Rule;
 class SubjectController extends Controller
 {
 
-  /**
-   * Create a new controller instance.
-   *
-   * @return void
-   */
-  public function __construct()
-  {
-      $this->middleware('auth');
-  }
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -192,12 +193,12 @@ class SubjectController extends Controller
         return view('subject.show', ['subject'=>$subject, 'parent'=>$parent, 'codex' => $menu, 'description' => $description,  ] );
     }
 
-	public function coldreader_homepage()
-	{
-		$subject = Subject::where('name', '=', 'Dashboard')->first();
-    return $this->show($subject->id);
-     //return view('subject.show', ['subject'=>$subject]);
-	}
+  	public function coldreader_homepage()
+  	{
+  		$subject = Subject::where('name', '=', 'Dashboard')->first();
+      return $this->show($subject->id);
+       //return view('subject.show', ['subject'=>$subject]);
+  	}
 
     /**
      * Show the form for editing the specified resource.
@@ -221,7 +222,6 @@ class SubjectController extends Controller
         } else {
           $currently_selected_type = htmlspecialchars(json_encode(array("")));
         }
-
 
         $form = '';
         $form .= \BootForm::open(['url' => '/subject/'.$id.'/edit', 'method' => 'post']);
