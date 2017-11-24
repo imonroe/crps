@@ -31,7 +31,7 @@ class Subject extends Model
       // So we'll return a SubjectType object if the id is greater than 0
       // Otherwise, we'll return false
       if ($this->subject_type > 0){
-        return SubjectType::where('id', '=', $this->subject_type)->get();
+        return SubjectType::where('id', '=', $this->subject_type)->first();
       } else {
         return false;
       }
