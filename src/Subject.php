@@ -23,6 +23,20 @@ class Subject extends Model
         return $this->belongsToMany(Aspect::class);
     }
 
+    /*
+      We'll need to know what this Subject's subject_type is.
+    */
+    public function subject_type(){
+      // Subjects with no type have the value set at -1
+      // So we'll return a SubjectType object if the id is greater than 0
+      // Otherwise, we'll return false
+      if ($this->subject_type > 0){
+        return SubjectType::where('id', '=', $this->subject_type)->get();
+      } else {
+        return false;
+      }
+    }
+
     public function sorted_aspects()
     {
         $aspect_collection = $this->aspects()->get();
