@@ -216,12 +216,7 @@ class SubjectController extends Controller
     public function edit($id)
     {
         $subject = Subject::findOrFail($id);
-
-        // $currently_selected_array = $subject->parent_subjectids_array();
-        // array_pop($currently_selected_array);
-        // $currently_selected = htmlspecialchars( json_encode( $currently_selected_array ) );
-        // $menu = htmlspecialchars( json_encode( Subject::codex_array( $id, true) ) );
-
+        // We need subject type information.
         $subject_types = htmlspecialchars(json_encode(SubjectType::codex_array(false, true)));
         if ( $subject->subject_type > 0 ){
           $st = SubjectType::find( $subject->subject_type );
@@ -233,16 +228,8 @@ class SubjectController extends Controller
         $form = '';
         $form .= \BootForm::open(['url' => '/subject/'.$id.'/edit', 'method' => 'post']);
         $form .= \BootForm::text('name', 'Subject Name', $subject->name);
-
-        $form .= '<div class="form-group "><label for="parent_id" class="control-label col-sm-2 col-md-3">Subject Type</label>';
-        $form .= '<div class="col-sm-2 col-md-3">';
-        $form .= '<subject-type-cascader :menu="'.$subject_types.'" :currently-selected="'.$currently_selected_type.'"></subject-cascader>';
-        $form .= '</div></div>';
-
-        //$form .= \BootForm::label('parent_id_label', 'Parent Subject');
-        //$form .= '<subject-cascader :menu="'.$menu.'" :currently-selected="'.$currently_selected.'"></subject-cascader>';
-        //$form .= '';
-
+        $form .= \BootForm::label('parent_id_label', 'Subject Type');
+        $form .= '<subject-type-cascader :menu="'.$subject_types.'" :currently-selected="'.$currently_selected_type.'"></subject-cascader>'.PHP_EOL;
         $form .= \BootForm::textarea('description', 'Subject Description', $subject->description);
         $form .= '<p>Created at: '.$subject->created_at.'<br />Updated at:'.$subject->updated_at.'</p>';
         $form .= \BootForm::submit('Submit') . '</p>';
