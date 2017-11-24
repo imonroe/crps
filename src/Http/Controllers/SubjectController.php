@@ -52,6 +52,7 @@ class SubjectController extends Controller
      */
     public function create($parent_id=null, $subject_type_id=null)
     {
+        /*
         $menu = htmlspecialchars(json_encode(Subject::codex_array(false, true)));
         if ($parent_id){
             // we'll need a little information about the parent.
@@ -60,6 +61,7 @@ class SubjectController extends Controller
         } else {
           $currently_selected = htmlspecialchars(json_encode(array("")));
         }
+        */
 
         $subject_types = htmlspecialchars(json_encode(SubjectType::codex_array(false, true)));
         if ($subject_type_id){
@@ -148,11 +150,14 @@ class SubjectController extends Controller
         $new_subject = new Subject;
         $new_subject->name = $request->input('name');
         $new_subject->description = $request->input('description');
+
+        /*
         if (!empty($request->input('parent_id'))){
           $new_subject->parent_id = $request->input('parent_id');
         } else {
           $new_subject->parent_id = -1;
         }
+        */
 
         $new_subject->subject_type = $request->input('subject_type');
         $new_subject->user = Auth::id();
@@ -172,6 +177,7 @@ class SubjectController extends Controller
         $subject = Subject::findOrFail($id);
 
         // We want a little information about the parent, if it's available.
+        /*
         $parent_id = $subject->parent_id;
         $parent_name = '';
         if ($parent_id > 0){
@@ -186,11 +192,12 @@ class SubjectController extends Controller
         } else {
           $menu = false;
         }
+        */
 
         // If we have a description, we'll treat it like Markdown and pass it to the template.
         $description = '<p>' . $subject->description . '</p>';
 
-        return view('subject.show', ['subject'=>$subject, 'parent'=>$parent, 'codex' => $menu, 'description' => $description,  ] );
+        return view('subject.show', ['subject'=>$subject, 'description' => $description,  ] );
     }
 
   	public function coldreader_homepage()
@@ -254,7 +261,7 @@ class SubjectController extends Controller
     {
         $new_subject = Subject::findOrFail($id);
         $new_subject->name = $request->input('name');
-        $new_subject->parent_id = $request->input('parent_id');
+        //$new_subject->parent_id = $request->input('parent_id');
         $new_subject->subject_type = $request->input('subject_type');
         $new_subject->description = $request->input('description');
         $new_subject->save();
