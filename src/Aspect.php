@@ -260,6 +260,15 @@ class Aspect extends Model implements HasMediaConversions
     {
         return false;
     }
+
+    public function can_edit(){
+      if ($this->editable == 1){
+        return true;
+      } else {
+        return false;
+      }
+    }
+
 } // End of base Aspect Class.
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
