@@ -113,6 +113,7 @@ class SubjectTypeController extends Controller
           $type_description = $type->type_description;
           $all_subjects = $type->get_all_subjects();
           $unfolded_subject_types = $type->parent_subject_type_ids_array();
+          array_pop($unfolded_subject_types);
         }
 
         $codex = SubjectType::codex_array(false, true);
