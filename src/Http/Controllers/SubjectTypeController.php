@@ -102,15 +102,16 @@ class SubjectTypeController extends Controller
           $type_name = 'None';
           $type_id = -1;
           $type_description = '';
+          $all_subjects = Subject::where('subject_type', '=', '-1')->get();
         } else {
           $type = SubjectType::find($id);
           $type_name = $type->type_name;
           $type_id = $type->id;
           $type_description = $type->type_description;
+          $all_subjects = $type->get_all_subjects();
         }
 
         $codex = SubjectType::codex_array(false, true);
-        $all_subjects = $type->get_all_subjects();
         $page = Paginator::resolveCurrentPage('page') ?: 1;
         $perPage = 25;
         $paginate = new LengthAwarePaginator($all_subjects->forPage($page, $perPage), $all_subjects->count(), $perPage, $page, ['path'=>url('/subject_type/'.$id)]);
