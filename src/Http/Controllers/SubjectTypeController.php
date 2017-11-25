@@ -99,7 +99,7 @@ class SubjectTypeController extends Controller
 
       */
         if ( $id < 0 ){
-          $type_name = 'None';
+          $type_name = 'Codex';
           $type_id = -1;
           $type_description = '';
           $all_subjects = Subject::where('subject_type', '=', '-1')->get();
