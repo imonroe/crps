@@ -89,25 +89,38 @@ class SubjectTypeController extends Controller
      */
     public function show($id)
     {
-        $type = SubjectType::find($id);
-        $parent_type = SubjectType::find($type->parent_id);
-        $children = $type->children();
-        $parent_type_name = !empty($parent_type->type_name) ? $parent_type->type_name : 'None';
-        $parent_type_id = !empty($parent_type->id) ? $parent_type->id : false;
-        $all_subjects = $type->get_all_subjects();
+      /*
+        I am going to need:
+        $type->id
+        type->type_name
+        $type->type_description
+        $codex
+        $page
+
+      */
+        if ( $id < 0 ){
+          $type_name = 'None';
+          $type_id = -1;
+          $type_description = '';
+        } else {
+          $type = SubjectType::find($id);
+          $type_name = $type->type_name;
+          $type_id = $type->id;
+          $type_description = $type->type_description;
+        }
 
         $codex = SubjectType::codex_array(false, true);
-
+        $all_subjects = $type->get_all_subjects();
         $page = Paginator::resolveCurrentPage('page') ?: 1;
         $perPage = 25;
         $paginate = new LengthAwarePaginator($all_subjects->forPage($page, $perPage), $all_subjects->count(), $perPage, $page, ['path'=>url('/subject_type/'.$id)]);
 
         return view(
             'subject_type.show', ['type' => $type,
-                                          'title'=>'Subject Type: '.$type->type_name,
-                                          'parent_name' => $parent_type_name,
-                                          'parent_type_id' => $parent_type_id,
-                                          'children' => $children,
+                                          'title'=>'Subject Type: '.$type_name,
+                                          'type_name' => $type_name,
+                                          'type_id' => $type_id,
+                                          'type_description' => $type_description,
                                           'subjects' => $paginate,
                                           'codex' => $codex,
                                          ]
