@@ -117,14 +117,14 @@ class SubjectTypeController extends Controller
         $paginate = new LengthAwarePaginator($all_subjects->forPage($page, $perPage), $all_subjects->count(), $perPage, $page, ['path'=>url('/subject_type/'.$id)]);
 
         return view(
-            'subject_type.show', ['type' => $type,
-                                          'title'=>'Subject Type: '.$type_name,
-                                          'type_name' => $type_name,
-                                          'type_id' => $type_id,
-                                          'type_description' => $type_description,
-                                          'subjects' => $paginate,
-                                          'codex' => $codex,
-                                         ]
+            'subject_type.show', [
+                                  'title'=>'Subject Type: '.$type_name,
+                                  'type_name' => $type_name,
+                                  'type_id' => $type_id,
+                                  'type_description' => $type_description,
+                                  'subjects' => $paginate,
+                                  'codex' => $codex,
+                                 ]
         );
     }
 
