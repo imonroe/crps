@@ -4,6 +4,7 @@
 use Illuminate\Http\Request;
 use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
+use imonroe\crps\Http\Controllers\SubjectTypeController;
 
 Route::namespace('imonroe\crps\Http\Controllers')->group(
     function () {
@@ -25,7 +26,12 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 );
 
                 Route::get('/subject', 'SubjectController@index');  // subject index
-                Route::get('/codex', 'SubjectController@index');  //codex alias
+
+                //Route::get('/codex', 'SubjectController@index');  //codex alias
+                Route::get('/codex', function(){
+                  $st = new SubjectTypeController;
+                  $st->show(-1);
+                })->name('codex');
 
                 Route::get('/subject/create', 'SubjectController@create'); // new subject form
                 Route::get('/subject/create/{subject_type_id}', 'SubjectController@create'); // new subject form
