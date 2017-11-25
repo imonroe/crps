@@ -30,7 +30,7 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 //Route::get('/codex', 'SubjectController@index');  //codex alias
                 Route::get('/codex', function(){
                   $st = new SubjectTypeController;
-                  $st->show(-1);
+                  return $st->show(-1);
                 })->name('codex');
 
                 Route::get('/subject/create', 'SubjectController@create'); // new subject form
