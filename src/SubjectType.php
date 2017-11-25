@@ -22,6 +22,7 @@ class SubjectType extends Model
 
     public static function directory()
     {
+        //  DEPRECATED
         $output = '<ul class="subject_type_directory" id="treeData">'.PHP_EOL;
         $top_level_types = SubjectType::where('parent_id', -1)->orderBy('type_name')->get();
         foreach ($top_level_types as $t) {
@@ -31,15 +32,7 @@ class SubjectType extends Model
         return $output;
     }
 
-    public static function options_list()
-    {
-        $all_types = SubjectType::all();
-        $output = array('-1' => 'None');
-        foreach ($all_types as $t) {
-            $output[$t->id] = $t->type_name;
-        }
-        return $output;
-    }
+
 
     public function subjects()
     {
@@ -93,8 +86,23 @@ class SubjectType extends Model
         return $output;
     }
 
+    public static function options_list()
+    {
+        // DUPLICATE OF ABOVE?
+        $all_types = SubjectType::all();
+        $output = array('-1' => 'None');
+        foreach ($all_types as $t) {
+            $output[$t->id] = $t->type_name;
+        }
+        return $output;
+    }
+
+
+
     public function get_html($with_links = false)
     {
+        // DEPRECATED
+
         $output = '<li>';
         if ($with_links) {
             $output .= '<a href="/subject_type/'.$this->id.'">';
@@ -118,7 +126,7 @@ class SubjectType extends Model
     }
 
     /*
-    * Returns an array representation of all subjects in the database as a tree
+    * Returns an array representation of all subject types in the database as a tree
     *
     * parameters:
     *
@@ -190,8 +198,7 @@ class SubjectType extends Model
     public function directory_array( $filter_id=false, $include_subjects=false ){
       // we want an array that looks like:
       // $array['value' => (string)$this->id, 'label' => $this->name, 'children' => array() ];
-      //dd( (int)$filter_id);
-      //dd($this->id);
+
       if ( $filter_id == $this->id ){
         return null;
       } else {
@@ -247,10 +254,6 @@ class SubjectType extends Model
       }
       $output[] = (string)$this->id;
       return $output;
-    }
-
-    public function full_directory(){
-
     }
 
 

@@ -93,22 +93,29 @@ class SubjectTypeController extends Controller
         $type->id
         type->type_name
         $type->type_description
+        $unfolded_subject_types
         $codex
         $page
 
+        Here, we account for the special case of a subject having no Subject Type.
+        In that case, we have a type id of -1, so we'll just handle that manually.
       */
         if ( $id < 0 ){
           $type_name = 'Codex';
           $type_id = -1;
           $type_description = '';
           $all_subjects = Subject::where('subject_type', '=', '-1')->get();
+          $unfolded_subject_types = array();
         } else {
           $type = SubjectType::find($id);
           $type_name = $type->type_name;
           $type_id = $type->id;
           $type_description = $type->type_description;
           $all_subjects = $type->get_all_subjects();
+          $unfolded_subject_types = $type->parent_subject_type_ids_array();
         }
+
+        $unfolded_subject_types =
 
         $codex = SubjectType::codex_array(false, true);
         $page = Paginator::resolveCurrentPage('page') ?: 1;
@@ -120,6 +127,7 @@ class SubjectTypeController extends Controller
                                   'title'=>'Subject Type: '.$type_name,
                                   'type_name' => $type_name,
                                   'type_id' => $type_id,
+                                  'unfolded_subject_types' => $unfolded_subject_types,
                                   'type_description' => $type_description,
                                   'subjects' => $paginate,
                                   'codex' => $codex,
