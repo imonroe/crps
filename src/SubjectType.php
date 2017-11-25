@@ -242,7 +242,7 @@ class SubjectType extends Model
         $parent_subject_type = SubjectType::where('id', '=', $parent_id)->first();
         //dd($parent_subject);
         //$output[] = $parent_subject->id;
-        $parent_array = $parent_subject_type->parent_subjectids_array();
+        $parent_array = $parent_subject_type->parent_subject_type_ids_array();
         $output = array_merge($output, $parent_array);
       }
       $output[] = (string)$this->id;
