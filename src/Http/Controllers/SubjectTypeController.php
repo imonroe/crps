@@ -44,7 +44,6 @@ class SubjectTypeController extends Controller
     {
         $form = '';
         $form .= \BootForm::horizontal(['url' => '/subject_type/create', 'method' => 'post']);
-        $form .= \BootForm::text('name', 'Subject Name');
         $form .= \BootForm::text('type_name', 'Subject Type Name');
         $form .= \BootForm::text('type_description', 'Subject Type Description');
         $form .= \BootForm::select('parent_id', 'Parent Subject Type: ', SubjectType::options_list());
