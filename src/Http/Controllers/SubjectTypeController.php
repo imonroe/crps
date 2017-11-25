@@ -115,8 +115,6 @@ class SubjectTypeController extends Controller
           $unfolded_subject_types = $type->parent_subject_type_ids_array();
         }
 
-        $unfolded_subject_types =
-
         $codex = SubjectType::codex_array(false, true);
         $page = Paginator::resolveCurrentPage('page') ?: 1;
         $perPage = 25;

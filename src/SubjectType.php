@@ -252,7 +252,7 @@ class SubjectType extends Model
         $parent_array = $parent_subject_type->parent_subject_type_ids_array();
         $output = array_merge($output, $parent_array);
       }
-      $output[] = (string)$this->id;
+      $output[] = $this->id;
       return $output;
     }
 
