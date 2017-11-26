@@ -125,11 +125,14 @@ class AspectController extends Controller
         $aspect->pre_save($request);
         // Save the record to the database
         $aspect->save();
-        // fire the post-save hook, if it's there.
-        $aspect->post_save($request);
+
         // attach the aspect to the subject.
         $subject = Subject::find($request->input('subject_id'));
         $subject->aspects()->attach($aspect->id);
+
+        // fire the post-save hook, if it's there.
+        $aspect->post_save($request);
+
         // Let's get back to the subject at hand.
         $request->session()->flash('message', 'Aspect saved.');
         return redirect('/subject/'.$subject->id);
