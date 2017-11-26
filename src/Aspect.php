@@ -71,6 +71,16 @@ class Aspect extends Model implements HasMediaConversions
         return null;
     }
 
+    /*
+      It's more convenient to work with the aspect_notes metadata as a PHP array,
+      even though we store it as JSON.
+      Here, we include a convenience method to let us just snag it as an array.
+      @returns Array
+    */
+    public function get_aspect_notes_array(){
+      return (array) json_decode($this->aspect_notes);
+    }
+
     public function isSubclass()
     {
         if (is_subclass_of($this, 'Aspect')) {
@@ -253,23 +263,23 @@ class Aspect extends Model implements HasMediaConversions
 	   They get called in the AspectController in the relevant places.
     */
 
-    public function pre_save(Request $request)
+    public function pre_save(Request &$request)
     {
         return false;
     }
-    public function post_save(Request $request)
+    public function post_save(Request &$request)
     {
         return false;
     }
-    public function pre_update(Request $request)
+    public function pre_update(Request &$request)
     {
         return false;
     }
-    public function post_update(Request $request)
+    public function post_update(Request &$request)
     {
         return false;
     }
-    public function pre_delete(Request $request)
+    public function pre_delete(Request &$request)
     {
         return false;
     }
