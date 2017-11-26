@@ -254,7 +254,6 @@ class AspectController extends Controller
     public function destroy(Request $request, $id)
     {
         $garbage_aspect = Aspect::find($id);
-        dd($garbage_aspect);
         // fire the pre-delete hook, if available
         $garbage_aspect->pre_delete($request);
 
