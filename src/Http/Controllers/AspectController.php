@@ -256,10 +256,9 @@ class AspectController extends Controller
         $garbage_aspect = Aspect::find($id);
         // fire the pre-delete hook, if available
         $garbage_aspect->pre_delete($request);
-
-        $origin = $garbage_aspect->subjects()->first();
-        $garbage_aspect->subjects()->detach();
-        $garbage_aspect->delete();
+        //$origin = $garbage_aspect->subjects()->first();
+        //$garbage_aspect->subjects()->detach();
+        Aspect::where('id', $id)->delete();
         $request->session()->flash('message', 'Aspect deleted.');
         return redirect('/subject/'.$origin->id);
     }
