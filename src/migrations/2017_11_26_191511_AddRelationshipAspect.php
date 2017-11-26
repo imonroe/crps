@@ -3,10 +3,8 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use imonroe\crps\Subject;
-use imonroe\crps\SubjectType;
 
-class RemovingSubjectTypes extends Migration
+class AddRelationshipAspect extends Migration
 {
     /**
      * Run the migrations.
@@ -15,11 +13,11 @@ class RemovingSubjectTypes extends Migration
      */
     public function up()
     {
-      // Add the new fields to the subjects table
-      Schema::table('subjects', function (Blueprint $table) {
-        $table->integer('parent_id')->default(-1);
-        $table->text('description')->nullable();
-      });
+        $aspect_type = new AspectType;
+        $aspect_type->aspect_name = 'Relationship';
+        $aspect_type->aspect_description = 'Describes a relationship between two Subjects';
+        $aspect_type->is_viewable = 1;
+        $aspect_type->save();
     }
 
     /**
