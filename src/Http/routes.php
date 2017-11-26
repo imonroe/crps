@@ -8,7 +8,7 @@ use imonroe\crps\Http\Controllers\SubjectTypeController;
 
 Route::namespace('imonroe\crps\Http\Controllers')->group(
     function () {
-        Route::middleware(['web'])->group(
+        Route::middleware(['web', 'auth'])->group(
             function () {
                 // Subject routes:
                 Route::get('/subject/autocomplete', 'SubjectController@autocomplete'); // subject autocompleter
