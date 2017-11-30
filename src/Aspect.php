@@ -12,7 +12,7 @@ use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Carbon\Carbon;
 use imonroe\ana\Ana;
-
+use Illuminate\Support\Facades\Log;
 
 class Aspect extends Model implements HasMediaConversions
 {
@@ -254,7 +254,7 @@ class Aspect extends Model implements HasMediaConversions
 
     public function parse()
     {
-        //
+        Log::info('Ran parse function for: '.$this->id);
     }
 
     /*
