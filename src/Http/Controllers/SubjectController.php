@@ -54,7 +54,7 @@ class SubjectController extends Controller
     {
 
         $subject_types = htmlspecialchars(json_encode(SubjectType::codex_array(false, true)));
-        if ($subject_type_id){
+        if (!empty($subject_types) && $subject_type_id > -1){
           // we'll need a little information about the subject type.
           $st = SubjectType::find($subject_type_id);
           $currently_selected_type = htmlspecialchars( json_encode( $st->parent_subject_type_ids_array() ) );
