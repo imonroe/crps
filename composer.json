@@ -7,7 +7,7 @@
         "crps"
     ],
     "homepage": "https://github.com/imonroe/crps",
-    "license": "GPLv3",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Ian Monroe",
