@@ -2,7 +2,9 @@
 
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
+use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use imonroe\crps\SubjectType;
@@ -10,6 +12,17 @@ use imonroe\crps\Subject;
 
 class SubjectTypeController extends Controller
 {
+
+  /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+      $this->middleware('auth');
+  }
+
     /**
      * Display a listing of the resource.
      *
@@ -30,24 +43,12 @@ class SubjectTypeController extends Controller
     public function create()
     {
         $form = '';
-        $form .= \Form::open(['url' => '/subject_type/create', 'method' => 'post']);
-        $form .= '<p>';
-        $form .= \Form::label('type_name', 'Subject Type Name: ');
-        $form .= \Form::text('type_name');
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('type_description', 'Subject Type Description: ');
-        $form .= \Form::text('type_description');
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \Form::label('parent_id', 'Parent Subject Type: ');
-        $form .= \Form::select('parent_id', SubjectType::options_list());
-        $form .= '</p>';
-
-        $form .= '<p>' . \Form::submit('Submit') . '</p>';
-        $form .= \Form::close();
+        $form .= \BootForm::horizontal(['url' => '/subject_type/create', 'method' => 'post']);
+        $form .= \BootForm::text('type_name', 'Subject Type Name');
+        $form .= \BootForm::text('type_description', 'Subject Type Description');
+        $form .= \BootForm::select('parent_id', 'Parent Subject Type: ', SubjectType::options_list());
+        $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
+        $form .= \BootForm::close();
         return view('forms.basic', ['form' => $form, 'title'=>'Create a new Subject Type']);
     }
 
@@ -60,17 +61,19 @@ class SubjectTypeController extends Controller
     public function store(Request $request)
     {
         /*
-        id	int(10) unsigned Auto Increment	 
-        type_name	varchar(191)	 
-        type_description	text NULL	 
-        aspect_group	int(11) NULL	 
-        parent_id	int(11) NULL	 
+        id	int(10) unsigned Auto Increment
+        type_name	varchar(191)
+        type_description	text NULL
+        aspect_group	int(11) NULL
+        parent_id	int(11) NULL
         */
 
-        $type = new SubjectType; 
+        $type = new SubjectType;
         $type->type_name = $request->input('type_name');
         $type->type_description = $request->input('type_description');
         $type->parent_id = (int) $request->input('parent_id');
+        // Who does this aspect belong to?
+        $type->user = Auth::id();
         $type->save();
         $request->session()->flash('message', 'Subject Type saved.');
         return redirect('/subject_type/'.$type->id);
@@ -85,26 +88,53 @@ class SubjectTypeController extends Controller
      */
     public function show($id)
     {
-        $type = SubjectType::find($id);
-        $parent_type = SubjectType::find($type->parent_id);
-        $children = $type->children();
-        $parent_type_name = !empty($parent_type->type_name) ? $parent_type->type_name : 'None';
-        $parent_type_id = !empty($parent_type->id) ? $parent_type->id : false;
-        $all_subjects = $type->get_all_subjects();
+      /*
+        I am going to need:
+        $type->id
+        type->type_name
+        $type->type_description
+        $unfolded_subject_types
+        $codex
+        $page
 
+        Here, we account for the special case of a subject having no Subject Type.
+        In that case, we have a type id of -1, so we'll just handle that manually.
+      */
+        if ( $id < 0 ){
+          $type_name = 'Codex';
+          $type_id = -1;
+          $type_description = '';
+          $all_subjects = Subject::where('subject_type', '=', '-1')->get();
+          $unfolded_subject_types = array();
+        } else {
+          $type = SubjectType::find($id);
+          $type_name = $type->type_name;
+          $type_id = $type->id;
+          $type_description = $type->type_description;
+          $all_subjects = $type->get_all_subjects();
+          $unfolded_subject_types = $type->parent_subject_type_ids_array();
+          //$unfolded_subject_types[] = $type_id;
+          if (count($unfolded_subject_types) > 1){
+              array_pop($unfolded_subject_types);
+          }
+        }
+
+        $codex = SubjectType::codex_array(false, true);
         $page = Paginator::resolveCurrentPage('page') ?: 1;
         $perPage = 25;
         $paginate = new LengthAwarePaginator($all_subjects->forPage($page, $perPage), $all_subjects->count(), $perPage, $page, ['path'=>url('/subject_type/'.$id)]);
 
         return view(
-            'subject_type.show', ['type' => $type, 
-                                          'title'=>'Subject Type: '.$type->type_name, 
-                                          'parent_name' => $parent_type_name,
-                                          'parent_type_id' => $parent_type_id,
-                                          'children' => $children,
-                                          'subjects' => $paginate, 
-                                         ]
-        ); 
+            'subject_type.show', [
+                                  'title'=>'Subject Type: '.$type_name,
+                                  'type_name' => $type_name,
+                                  'type_id' => $type_id,
+                                  'unfolded_subject_types' => $unfolded_subject_types,
+                                  'type_description' => $type_description,
+                                  'subjects' => $paginate,
+                                  'codex' => $codex,
+                                 ]
+        );
     }
 
     /**
@@ -117,15 +147,15 @@ class SubjectTypeController extends Controller
     {
         $subject_type = SubjectType::findOrFail($id);
         $form = '';
-        $form .= \Form::open(['url' => '/subject_type/'.$id.'/edit', 'method' => 'post']);
+        $form .= \BootForm::horizontal(['url' => '/subject_type/'.$id.'/edit', 'method' => 'post']);
         $form .= '<p>';
-        $form .= \Form::label('type_name', 'Subject Type Name: ');
-        $form .= \Form::text('type_name', $subject_type->type_name);
+        $form .= \BootForm::label('type_name', 'Subject Type Name: ');
+        $form .= \BootForm::text('type_name', $subject_type->type_name);
         $form .= '</p>';
 
         $form .= '<p>';
-        $form .= \Form::label('type_description', 'Subject Type Description: ');
-        $form .= \Form::text('type_description', $subject_type->type_description);
+        $form .= \BootForm::label('type_description', 'Subject Type Description: ');
+        $form .= \BootForm::text('type_description', $subject_type->type_description);
         $form .= '</p>';
 
         // You can't be your own grandpa.
@@ -135,12 +165,12 @@ class SubjectTypeController extends Controller
         }
 
         $form .= '<p>';
-        $form .= \Form::label('parent_id', 'Parent Subject Type: ');
-        $form .= \Form::select('parent_id', $parents_options, $subject_type->parent_id);
+        $form .= \BootForm::label('parent_id', 'Parent Subject Type: ');
+        $form .= \BootForm::select('parent_id', $parents_options, $subject_type->parent_id);
         $form .= '</p>';
 
-        $form .= '<p>' . \Form::submit('Submit') . '</p>';
-        $form .= \Form::close();
+        $form .= '<p>' . \BootForm::submit('Submit') . '</p>';
+        $form .= \BootForm::close();
         return view('forms.basic', ['form' => $form, 'title'=>'Edit the '.$subject_type->type_name.' Subject Type']);
     }
 
@@ -153,7 +183,7 @@ class SubjectTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $type = SubjectType::findOrFail($id); 
+        $type = SubjectType::findOrFail($id);
         $type->type_name = $request->input('type_name');
         $type->type_description = $request->input('type_description');
         $type->parent_id = (int) $request->input('parent_id');

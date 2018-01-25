@@ -61,19 +61,8 @@ class CreateCrpsTables extends Migration
                 'subjects', function (Blueprint $t) {
                     $t->increments('id');
                     $t->string('name');
-                    $t->integer('subject_type');
-                    $t->timestamps();
-                }
-            );
-        }
-
-        if (!(Schema::hasTable('subject_types')) ) {
-            Schema::create(
-                'subject_types', function (Blueprint $t) {
-                    $t->increments('id');
-                    $t->string('type_name');
-                    $t->text('type_description')->nullable();
-                    $t->integer('parent_id')->nullable();
+                    $t->integer('parent_id')->default(-1);
+                    $t->text('description')->nullable();
                     $t->timestamps();
                 }
             );
@@ -90,7 +79,6 @@ class CreateCrpsTables extends Migration
     {
         Schema::drop('subjects');
         Schema::drop('aspects');
-        Schema::drop('subject_types');
         Schema::drop('aspect_subjects');
         Schema::drop('aspect_types');
     }

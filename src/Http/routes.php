@@ -1,11 +1,14 @@
-<?php 
+<?php
 
 
 use Illuminate\Http\Request;
+use imonroe\crps\Aspect;
+use imonroe\crps\AspectType;
+use imonroe\crps\Http\Controllers\SubjectTypeController;
 
 Route::namespace('imonroe\crps\Http\Controllers')->group(
     function () {
-        Route::middleware(['auth', 'web'])->group(
+        Route::middleware(['web', 'auth'])->group(
             function () {
                 // Subject routes:
                 Route::get('/subject/autocomplete', 'SubjectController@autocomplete'); // subject autocompleter
@@ -23,6 +26,13 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 );
 
                 Route::get('/subject', 'SubjectController@index');  // subject index
+
+                //Route::get('/codex', 'SubjectController@index');  //codex alias
+                Route::get('/codex', function(){
+                  $st = new SubjectTypeController;
+                  return $st->show(-1);
+                })->name('codex');
+
                 Route::get('/subject/create', 'SubjectController@create'); // new subject form
                 Route::get('/subject/create/{subject_type_id}', 'SubjectController@create'); // new subject form
                 Route::get('/subject/create_from_search/{query}', 'SubjectController@create_from_search'); // new subject form
@@ -31,6 +41,8 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::get('/subject/{id}/edit', 'SubjectController@edit');  // edit subject form
                 Route::post('/subject/{id}/edit', 'SubjectController@update');  // edit subject form handler
                 Route::get('/subject/{id}/delete', 'SubjectController@destroy');  // delete subject form handler
+                Route::get('/subjects/codex', 'SubjectController@get_codex_array');
+                Route::get('/subjects/codex/{subject_id}', 'SubjectController@get_codex_array');
 
                 // Subject type routes:
                 Route::get('/subject_type', 'SubjectTypeController@index');  // aspect_type index
@@ -48,19 +60,17 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::get('/aspect/{id}/edit', 'AspectController@edit');  // edit aspect form
                 Route::post('/aspect/{id}/edit', 'AspectController@update');  // edit aspect form handler
                 Route::get('/aspect/{id}/delete', 'AspectController@destroy');  // delete aspect form handler
-				
-				Route::post('/aspect/{id}/fold', function ($id, Request $request) {
-					$aspect = Aspect::find($id);
 
-					if ( $aspect->folded ){
-						$aspect->folded = 0;
-					} else {
-						$aspect->folded = 1;
-					}
-
-					$aspect->update_aspect();
-					dd($aspect);
-				});
+        				Route::post('/aspect/{id}/fold', function ($id, Request $request) {
+        					$aspect = Aspect::find($id);
+        					if ( $aspect->folded ){
+        						$aspect->folded = 0;
+        					} else {
+        						$aspect->folded = 1;
+        					}
+        					$aspect->update_aspect();
+        					//dd($aspect);
+        				});
 
                 // Aspect type routes:
                 Route::get('/aspect_type', 'AspectTypeController@index');  // aspect_type index
@@ -70,10 +80,15 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::get('/aspect_type/{id}/edit', 'AspectTypeController@edit');  // edit aspect_type form
                 Route::post('/aspect_type/{id}/edit', 'AspectTypeController@update');  // edit aspect_type form handler
                 Route::get('/aspect_type/{id}/delete', 'AspectTypeController@destroy');  // delete aspect_type form handler
+                Route::post('/aspect_type/add_aspect_jump_menu', function (){
+                  $output = AspectType::get_options_array('json');
+                  //dd($output);
+                  return $output;
+                });
 
                 // Search routes
                 Route::get('/search', 'SearchController@index');
-                Route::post('/search', 'SearchController@basic_search_handler');
+                Route::post('/search/results', 'SearchController@show_search_results');
             }
         );
     }

@@ -2,6 +2,7 @@
 
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
+use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use imonroe\crps\Aspect;
@@ -12,6 +13,15 @@ use imonroe\crps\Http\Controllers\GoogleController;
 
 class SearchController extends Controller
 {
+  /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+      $this->middleware('auth');
+  }
 
     /*
     *	The basic web search pulls results from DuckDuckGo to try to provide an abstract on a search subject.
@@ -29,9 +39,14 @@ class SearchController extends Controller
         //curl_setopt($curl, CURLOPT_USERAGENT, $app['user-agent']);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $opts);
         $results = curl_exec($curl);
-        curl_close($curl);    
+        curl_close($curl);
         $output = json_decode($results, true);
         return $output;
+    }
+
+    public function index(Request $request){
+      // make a basic search page.
+
     }
 
     /*
@@ -39,19 +54,11 @@ class SearchController extends Controller
     */
     public function show_search_results(Request $request)
     {
-        $query = $request->input('search_form_query');
-        $web_search_results = $this->web_search($query);
-        $google_searcher = new GoogleController;
-        $google_search_results = $google_searcher->google_search($query);
-        $google_drive_results = $google_searcher->search_drive($query);
-        $subject_results = $this->get_subject_results($query);
+        $query = $request->input('query');
+        $search_registry = app()->make('SearchRegistry');
+        $search_results = $search_registry->search($query);
         return view(
-            'search.results', ['abstract' => $web_search_results,
-                                       'google_search_results' => $google_search_results,
-                                       'google_drive_results' => $google_drive_results,
-                                       'subject_search_results' => $subject_results, 
-                                       'title'=>'Search Results for: '.$query,
-                                      ]
+            'search.results', ['title'=>'Search Results for: '.$query, 'results_markup' => $search_results, ]
         );
     }
 

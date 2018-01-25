@@ -1,6 +1,7 @@
 <?php
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
+use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
@@ -8,6 +9,16 @@ use Illuminate\Support\Facades\DB;
 
 class AspectTypeController extends Controller
 {
+
+  /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+      $this->middleware('auth');
+  }
     /**
      * Display a listing of the resource.
      *
@@ -57,12 +68,12 @@ class AspectTypeController extends Controller
     public function store(Request $request)
     {
         /*
-        id	int(10) unsigned Auto Increment	 
-        aspect_name	varchar(191)	 
-        aspect_description	text NULL	  
+        id	int(10) unsigned Auto Increment
+        aspect_name	varchar(191)
+        aspect_description	text NULL
         is_viewable	int(11) NULL
-        created_at	timestamp NULL	 
-        updated_at	timestamp NULL	 
+        created_at	timestamp NULL
+        updated_at	timestamp NULL
         */
 
         $type = new AspectType;
@@ -157,7 +168,7 @@ class AspectTypeController extends Controller
         $aspects_to_delete = Aspect::where('aspect_type', '=', $id);
         foreach ($aspects_to_delete as $d){
             $d->delete();
-        } 
+        }
         $type->delete();
         //$request->session()->flash('message', 'Aspect Type Deleted.');
         return redirect('/aspect_type');
@@ -168,7 +179,7 @@ class AspectTypeController extends Controller
         $aspect_classes_file = env('APP_FILE_ROOT').'/app/CustomAspects.php';
         $find_and_replace_token = '// ---------------------------------------------- //';
 
-        $new_type = DB::select('SELECT aspect_name FROM aspect_types where id = :id LIMIT 1', ['id' => $aspect_type_id]); 
+        $new_type = DB::select('SELECT aspect_name FROM aspect_types where id = :id LIMIT 1', ['id' => $aspect_type_id]);
         $aspect_type_name = $new_type[0]->aspect_name;
         $classname = \imonroe\ana\Ana::code_safe_name($aspect_type_name);
         $classname = $classname . 'Aspect';
@@ -201,9 +212,9 @@ class AspectTypeController extends Controller
         $file_contents = file_get_contents($aspect_classes_file);
         $file_contents = str_replace($find_and_replace_token, $output, $file_contents);
         if (file_put_contents($aspect_classes_file, $file_contents)) {
-            return true;    
+            return true;
         } else {
-            return false;    
+            return false;
         }
     } // end create_custom_aspect_class
 
