@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
 use imonroe\crps\Http\Controllers\SubjectTypeController;
+use imonroe\crps\Http\Controllers\UserPreferencesController;
 
 Route::namespace('imonroe\crps\Http\Controllers')->group(
     function () {
@@ -89,6 +90,10 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 // Search routes
                 Route::get('/search', 'SearchController@index');
                 Route::post('/search/results', 'SearchController@show_search_results');
+
+                // User preference routes
+                Route::post('/user/prefs', 'UserPreferencesController@update_user_preferences');
+
             }
         );
     }
