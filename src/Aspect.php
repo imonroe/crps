@@ -235,6 +235,11 @@ class Aspect extends Model implements HasMediaConversions
         return $this->belongsToMany(Subject::class, 'aspect_subject', 'aspect_id', 'subject_id');
     }
 
+    public function subject_id()
+    {
+        return $this->subjects()->first()->id;
+    }
+
     public function get_hash()
     {
         return md5($this->aspect_data);
