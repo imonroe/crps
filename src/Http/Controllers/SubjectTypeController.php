@@ -214,4 +214,21 @@ class SubjectTypeController extends Controller
         $request->session()->flash('message', 'Subject Type deleted.');
         return redirect('/subject_type/');
     }
+
+    /**
+     *  AJAX friendly way of getting at the codex.
+     */
+    public function ajax_list(Request $request, $id='-1'){
+        $st = new SubjectType;
+        $codex = $st->codex_array( $filter_id=false, $include_root=true, $include_subjects=false );
+        return response()->json($codex);
+    }
+
+    /**
+     * 
+     */
+    public function ajax_subject_list(Request $request, $subject_type_id){
+        $subjects = Subject::where('subject_type', '=', $subject_type_id)->orderBy('name')->get(); 
+        return response()->json($subjects);
+    }
 }

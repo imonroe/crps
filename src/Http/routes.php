@@ -46,13 +46,15 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::get('/subjects/codex/{subject_id}', 'SubjectController@get_codex_array');
 
                 // Subject type routes:
-                Route::get('/subject_type', 'SubjectTypeController@index');  // aspect_type index
-                Route::get('/subject_type/create', 'SubjectTypeController@create'); // new aspect_type form
-                Route::post('/subject_type/create', 'SubjectTypeController@store');  // new aspect_type form handler
-                Route::get('/subject_type/{id}', 'SubjectTypeController@show');  // single aspect_type view
-                Route::get('/subject_type/{id}/edit', 'SubjectTypeController@edit');  // edit aspect_type form
-                Route::post('/subject_type/{id}/edit', 'SubjectTypeController@update');  // edit aspect_type form handler
-                Route::get('/subject_type/{id}/delete', 'SubjectTypeController@destroy');  // delete aspect_type form handler
+                Route::get('/subject_type', 'SubjectTypeController@index');  // subject type index
+                Route::get('/subject_type/create', 'SubjectTypeController@create'); // new subject type form
+                Route::post('/subject_type/create', 'SubjectTypeController@store');  // new subject type form handler
+                Route::get('/subject_type/{id}', 'SubjectTypeController@show');  // single subject type view
+                Route::get('/subject_type/{id}/edit', 'SubjectTypeController@edit');  // edit subject type form
+                Route::post('/subject_type/{id}/edit', 'SubjectTypeController@update');  // edit subject type form handler
+                Route::get('/subject_type/{id}/delete', 'SubjectTypeController@destroy');  // delete subject type form handler
+                Route::post('/subject_type/ajax/list', 'SubjectTypeController@ajax_list'); // gets a JSON formatted list of all Subject Types
+                Route::post('/subject_type/ajax/{subject_type_id}/subjects', 'SubjectTypeController@ajax_subject_list'); // gets a JSON formatted list of all Subject Types
 
                 // Aspect routes:
                 Route::get('/aspect/create/{subject_id}', 'AspectController@create'); // new aspect form
@@ -62,16 +64,15 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::post('/aspect/{id}/edit', 'AspectController@update');  // edit aspect form handler
                 Route::get('/aspect/{id}/delete', 'AspectController@destroy');  // delete aspect form handler
 
-        				Route::post('/aspect/{id}/fold', function ($id, Request $request) {
-        					$aspect = Aspect::find($id);
-        					if ( $aspect->folded ){
-        						$aspect->folded = 0;
-        					} else {
-        						$aspect->folded = 1;
-        					}
-        					$aspect->update_aspect();
-        					//dd($aspect);
-        				});
+                Route::post('/aspect/{id}/fold', function ($id, Request $request) {
+                    $aspect = Aspect::find($id);
+                    if ( $aspect->folded ){
+                        $aspect->folded = 0;
+                    } else {
+                        $aspect->folded = 1;
+                    }
+                    $aspect->update_aspect();
+                });
 
                 // Aspect type routes:
                 Route::get('/aspect_type', 'AspectTypeController@index');  // aspect_type index
@@ -83,7 +84,6 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::get('/aspect_type/{id}/delete', 'AspectTypeController@destroy');  // delete aspect_type form handler
                 Route::post('/aspect_type/add_aspect_jump_menu', function (){
                   $output = AspectType::get_options_array('json');
-                  //dd($output);
                   return $output;
                 });
 
