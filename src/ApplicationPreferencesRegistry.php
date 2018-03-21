@@ -10,6 +10,7 @@ class ApplicationPreferencesRegistry {
      * preferece_label => 'Some Preference Label'
      * field_type => textfield, dropdown, checkbox, textarea
      * default_value => some_value
+     * options => ['value' => 'Value label']
      * 
      * 
      */
@@ -47,7 +48,5 @@ class ApplicationPreferencesRegistry {
                 break;
         }
     }
-
-    
 
 }

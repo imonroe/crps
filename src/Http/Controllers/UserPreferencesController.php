@@ -38,6 +38,15 @@ class UserPreferencesController{
         return $prefs_array;
     }
 
+    public function check_preference($preference){
+        $user_prefs_array = $this->get_user_prefs();
+        if ( isset($user_prefs_array[$preference]) ){
+            return $user_prefs_array[$preference];
+        } else {
+            return false;
+        }
+    }
+
     public function get_preference_form()
     {
 
@@ -54,18 +63,19 @@ class UserPreferencesController{
         $form = \BootForm::horizontal(['url' => '/user/prefs', 'method' => 'post']);
         
         foreach ($app_prefs as $pref){
+            $default_value = ( isset( $user_prefs[$pref['preference']] ) ) ? $user_prefs[$pref['preference']] : '';
             switch ($pref['field_type']){
                 case 'text':
-                    $form .= \BootForm::text($pref['preference'], $pref['preference_label'], $user_prefs[$pref['preference']] );
+                    $form .= \BootForm::text($pref['preference'], $pref['preference_label'], $default_value );
                     break;
                 case 'textarea':
-                    $form .= \BootForm::textarea($pref['preference'], $pref['preference_label'], $user_prefs[$pref['preference']]  );
+                    $form .= \BootForm::textarea($pref['preference'], $pref['preference_label'], $default_value  );
                     break;
                 case 'checkbox':
-                    $form .= \BootForm::checkbox($pref['preference'], $pref['preference_label'], "true", $user_prefs[$pref['preference']] );
+                    $form .= \BootForm::checkbox($pref['preference'], $pref['preference_label'], "true", $default_value );
                     break;
                 case 'select':
-                    $form .= \BootForm::select('aspect_type', ['option_1' => 'Option 1', 'option_2' => 'Option 2'], $user_prefs[$pref['preference']] );
+                    $form .= \BootForm::select($pref['preference'], $pref['preference_label'], $pref['options'], $default_value );
                     break;
                 default:
                     break;
