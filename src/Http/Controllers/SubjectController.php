@@ -250,12 +250,15 @@ class SubjectController extends Controller
     public function destroy(Request $request, $id)
     {
         $new_subject = Subject::findOrFail($id);
-        foreach ($new_subject->aspects() as $a){
+        $subject_type = $new_subject->subject_type();
+        $subject_type_id = ( $subject_type ) ? $subject_type->id : '-1'; 
+        //dd($new_subject->aspects()->get());
+        foreach ($new_subject->aspects()->get() as $a){
           $a->delete();
         }
         $new_subject->delete();
         $request->session()->flash('message', 'Subject deleted.');
-        return redirect('/subject_type/'.$subject_type->id);
+        return redirect('/subject_type/'.$subject_type_id);
     }
 
     public static function autocomplete(Request $request)
