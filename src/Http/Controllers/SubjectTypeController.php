@@ -146,31 +146,24 @@ class SubjectTypeController extends Controller
     public function edit($id)
     {
         $subject_type = SubjectType::findOrFail($id);
-        $form = '';
-        $form .= \BootForm::horizontal(['url' => '/subject_type/'.$id.'/edit', 'method' => 'post']);
-        $form .= '<p>';
-        $form .= \BootForm::label('type_name', 'Subject Type Name: ');
-        $form .= \BootForm::text('type_name', $subject_type->type_name);
-        $form .= '</p>';
-
-        $form .= '<p>';
-        $form .= \BootForm::label('type_description', 'Subject Type Description: ');
-        $form .= \BootForm::text('type_description', $subject_type->type_description);
-        $form .= '</p>';
-
         // You can't be your own grandpa.
         $parents_options = SubjectType::options_list();
         if (!empty($parents_options[$id]) ) {
             unset($parents_options[$id]);
         }
 
-        $form .= '<p>';
-        $form .= \BootForm::label('parent_id', 'Parent Subject Type: ');
-        $form .= \BootForm::select('parent_id', $parents_options, $subject_type->parent_id);
-        $form .= '</p>';
-
-        $form .= '<p>' . \BootForm::submit('Submit') . '</p>';
+        $form = '';
+        $form .= \BootForm::horizontal(['url' => '/subject_type/'.$id.'/edit', 'method' => 'post']);
+        $form .= \BootForm::text('type_name', 'Subject Type Name', $subject_type->type_name);
+        $form .= \BootForm::text('type_description', 'Subject Type Description', $subject_type->type_description);
+        $form .= \BootForm::select('parent_id', 'Parent Subject Type: ', $parents_options);
+        $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
         $form .= \BootForm::close();
+        $form .= '<div class="alert alert-danger" role="alert">
+                    <p><strong>DANGER ZONE:</strong> Do you want to delete this subject type? All the subjects assigned to this type will be deleted.</p>
+                    <p><strong>!!! THIS CANNOT BE UNDONE !!!</strong></p>
+                    <a href="/subject_type/'.$id.'/delete" class="btn btn-danger confirm">Delete this subject type.</a>
+                </div>';
         return view('forms.basic', ['form' => $form, 'title'=>'Edit the '.$subject_type->type_name.' Subject Type']);
     }
 
@@ -212,7 +205,7 @@ class SubjectTypeController extends Controller
         }
         $type->delete();
         $request->session()->flash('message', 'Subject Type deleted.');
-        return redirect('/subject_type/');
+        return redirect('/codex/');
     }
 
     /**
