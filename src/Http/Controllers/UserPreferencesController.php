@@ -4,6 +4,7 @@ namespace imonroe\crps\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use imonroe\crps\Subject;
 
 class UserPreferencesController{
 
@@ -38,7 +39,8 @@ class UserPreferencesController{
         return $prefs_array;
     }
 
-    public function check_preference($preference){
+    public function check_preference($preference)
+    {
         $user_prefs_array = $this->get_user_prefs();
         if ( isset($user_prefs_array[$preference]) ){
             return $user_prefs_array[$preference];
@@ -88,8 +90,8 @@ class UserPreferencesController{
 
     }
 
-
-    public function update_user_preferences(Request $request){
+    public function update_user_preferences(Request $request)
+    {
         $input = $request->all();
         $defaults = $this->get_default_prefs();
         $user_prefs = array();
@@ -106,6 +108,16 @@ class UserPreferencesController{
         $request->user()->save();
         $request->session()->flash('message', 'Preferences saved.');
         return redirect('/settings#/profile');
+    }
+
+    public function get_cached_aspects(){
+        $cached_aspects_subject = Subject::where([
+            ['name', '=', 'CachedAspects'],
+            ['user', '=', $this->current_user->id]
+        ])
+        ->limit(1)
+        ->get();
+        return $cached_aspects_subject;
     }
 
 }

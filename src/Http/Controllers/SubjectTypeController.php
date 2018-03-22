@@ -221,7 +221,10 @@ class SubjectTypeController extends Controller
      * 
      */
     public function ajax_subject_list(Request $request, $subject_type_id){
-        $subjects = Subject::where('subject_type', '=', $subject_type_id)->orderBy('name')->get(); 
+        $subjects = Subject::where([
+            ['subject_type', '=', $subject_type_id],
+            ['hidden', '=', '0'],
+        ])->orderBy('name')->get(); 
         return response()->json($subjects);
     }
 }
