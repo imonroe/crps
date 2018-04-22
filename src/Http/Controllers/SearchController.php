@@ -2,14 +2,12 @@
 
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
-use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use imonroe\crps\Aspect;
 use imonroe\crps\AspectFactory;
 use imonroe\crps\AspectType;
 use imonroe\crps\Subject;
-use imonroe\crps\Http\Controllers\GoogleController;
 
 class SearchController extends Controller
 {

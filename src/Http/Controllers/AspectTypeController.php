@@ -1,7 +1,6 @@
 <?php
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
-use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;

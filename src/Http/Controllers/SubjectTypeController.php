@@ -2,7 +2,6 @@
 
 namespace imonroe\crps\Http\Controllers;
 use App\Http\Controllers\Controller;
-use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;

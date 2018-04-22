@@ -14,7 +14,6 @@ use imonroe\crps\Aspect;
 use imonroe\crps\AspectType;
 use imonroe\crps\AspectFactory;
 use Illuminate\Http\Response;
-use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GrahamCampbell\Markdown\Facades\Markdown;
