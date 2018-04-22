@@ -8,7 +8,7 @@ use imonroe\crps\Aspect;
 use imonroe\crps\AspectFactory;
 use imonroe\crps\AspectType;
 use imonroe\crps\Subject;
-use imonroe\mime_utils\MimeUtils;
+use imonroe\mimeutils\MimeUtils;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use URL;
