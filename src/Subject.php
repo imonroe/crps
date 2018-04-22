@@ -26,15 +26,16 @@ class Subject extends Model
     /*
       We'll need to know what this Subject's subject_type is.
     */
-    public function subject_type(){
+    public function subject_type()
+    {
       // Subjects with no type have the value set at -1
       // So we'll return a SubjectType object if the id is greater than 0
       // Otherwise, we'll return false
-      if ($this->subject_type > 0){
-        return SubjectType::where('id', '=', $this->subject_type)->first();
-      } else {
-        return false;
-      }
+        if ($this->subject_type > 0) {
+            return SubjectType::where('id', '=', $this->subject_type)->first();
+        } else {
+            return false;
+        }
     }
 
     public function sorted_aspects()
@@ -133,23 +134,24 @@ class Subject extends Model
           ]
         ]
     */
-    public static function codex_array( $filter_id=false, $include_root=false ){
-      $codex = array();
+    public static function codex_array($filter_id = false, $include_root = false)
+    {
+        $codex = array();
 
-      if ($include_root){
-        $no_parent_option = array('value' => '-1', 'label' => 'No Parent');
-        $codex[] = $no_parent_option;
-      }
-
-      $root_subjects = Subject::where('parent_id', '=', -1)->get();
-      foreach ($root_subjects as $s){
-        $rs_dir = $s->directory_array( $filter_id );
-        if (!empty($rs_dir)){
-          $codex[] = $s->directory_array( $filter_id );
+        if ($include_root) {
+            $no_parent_option = array('value' => '-1', 'label' => 'No Parent');
+            $codex[] = $no_parent_option;
         }
-      }
 
-      return $codex;
+        $root_subjects = Subject::where('parent_id', '=', -1)->get();
+        foreach ($root_subjects as $s) {
+            $rs_dir = $s->directory_array($filter_id);
+            if (!empty($rs_dir)) {
+                $codex[] = $s->directory_array($filter_id);
+            }
+        }
+
+        return $codex;
     }
 
     /*
@@ -158,50 +160,50 @@ class Subject extends Model
       This function is used by codex_array() to build the full list of subjects.
 
     */
-    public function directory_array( $filter_id=false ){
+    public function directory_array($filter_id = false)
+    {
       // we want an array that looks like:
       // $array['value' => (string)$this->id, 'label' => $this->name, 'children' => array() ];
       //dd( (int)$filter_id);
       //dd($this->id);
-      if ( $filter_id == $this->id ){
-        return null;
-      } else {
-        $output = array();
-        $output['value'] = (string)$this->id;
-        $output['label'] = $this->name;
-        $children = $this->children();
-        if ($children){
-          $child_array = array();
-          foreach ($children as $child){
-            $child_dir = $child->directory_array($filter_id);
-            if (!is_null($child_dir)){
-                $child_array[] = $child->directory_array($filter_id);
+        if ($filter_id == $this->id) {
+            return null;
+        } else {
+            $output = array();
+            $output['value'] = (string)$this->id;
+            $output['label'] = $this->name;
+            $children = $this->children();
+            if ($children) {
+                $child_array = array();
+                foreach ($children as $child) {
+                    $child_dir = $child->directory_array($filter_id);
+                    if (!is_null($child_dir)) {
+                        $child_array[] = $child->directory_array($filter_id);
+                    }
+                }
+                if (!empty($child_array)) {
+                    $output['children'] = $child_array;
+                }
             }
-          }
-          if (!empty($child_array)){
-            $output['children'] = $child_array;
-          }
+            return $output;
         }
-        return $output;
-      }
     }
 
     /*
       Returns a single-dimensional array of subject ids, including this one, as well as its parents.
     */
-    public function parent_subjectids_array(){
-      $output = array();
-      $parent_id = $this->parent_id;
-      if ( $parent_id > 0 ){
-        $parent_subject = Subject::where('id', '=', $parent_id)->first();
-        //dd($parent_subject);
-        //$output[] = $parent_subject->id;
-        $parent_array = $parent_subject->parent_subjectids_array();
-        $output = array_merge($output, $parent_array);
-      }
-      $output[] = (string)$this->id;
-      return $output;
+    public function parent_subjectids_array()
+    {
+        $output = array();
+        $parent_id = $this->parent_id;
+        if ($parent_id > 0) {
+            $parent_subject = Subject::where('id', '=', $parent_id)->first();
+          //dd($parent_subject);
+          //$output[] = $parent_subject->id;
+            $parent_array = $parent_subject->parent_subjectids_array();
+            $output = array_merge($output, $parent_array);
+        }
+        $output[] = (string)$this->id;
+        return $output;
     }
-
-
 }

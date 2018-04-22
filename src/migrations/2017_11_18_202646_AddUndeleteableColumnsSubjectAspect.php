@@ -14,15 +14,15 @@ class AddUndeleteableColumnsSubjectAspect extends Migration
     public function up()
     {
         if (Schema::hasTable('aspects')) {
-          Schema::table('aspects', function (Blueprint $table) {
-              $table->integer('editable')->default(1);
-          });
+            Schema::table('aspects', function (Blueprint $table) {
+                $table->integer('editable')->default(1);
+            });
         }
 
         if (Schema::hasTable('subjects')) {
-          Schema::table('subjects', function (Blueprint $table) {
-              $table->integer('editable')->default(1);
-          });
+            Schema::table('subjects', function (Blueprint $table) {
+                $table->integer('editable')->default(1);
+            });
         }
     }
 
@@ -34,11 +34,11 @@ class AddUndeleteableColumnsSubjectAspect extends Migration
     public function down()
     {
         Schema::table('aspects', function (Blueprint $table) {
-          $table->dropColumn('editable');
+            $table->dropColumn('editable');
         });
 
         Schema::table('subjects', function (Blueprint $table) {
-          $table->dropColumn('editable');
+            $table->dropColumn('editable');
         });
     }
 }

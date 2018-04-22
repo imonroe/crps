@@ -1,5 +1,6 @@
 <?php
 namespace imonroe\crps\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use imonroe\crps\Aspect;
@@ -14,10 +15,10 @@ class AspectTypeController extends Controller
    *
    * @return void
    */
-  public function __construct()
-  {
-      $this->middleware('auth');
-  }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -67,12 +68,12 @@ class AspectTypeController extends Controller
     public function store(Request $request)
     {
         /*
-        id	int(10) unsigned Auto Increment
-        aspect_name	varchar(191)
-        aspect_description	text NULL
-        is_viewable	int(11) NULL
-        created_at	timestamp NULL
-        updated_at	timestamp NULL
+        id  int(10) unsigned Auto Increment
+        aspect_name varchar(191)
+        aspect_description  text NULL
+        is_viewable int(11) NULL
+        created_at  timestamp NULL
+        updated_at  timestamp NULL
         */
 
         $type = new AspectType;
@@ -165,7 +166,7 @@ class AspectTypeController extends Controller
     {
         $type = AspectType::find($id);
         $aspects_to_delete = Aspect::where('aspect_type', '=', $id);
-        foreach ($aspects_to_delete as $d){
+        foreach ($aspects_to_delete as $d) {
             $d->delete();
         }
         $type->delete();
@@ -216,5 +217,4 @@ class AspectTypeController extends Controller
             return false;
         }
     } // end create_custom_aspect_class
-
 }

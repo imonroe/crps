@@ -26,7 +26,7 @@ class crpsServiceProvider extends ServiceProvider
         // Views:
         //$this->loadViewsFrom(__DIR__.'/path/to/views', 'courier');
         //$this->publishes([
-        //	__DIR__.'/path/to/views' => resource_path('views/vendor/courier'),
+        //  __DIR__.'/path/to/views' => resource_path('views/vendor/courier'),
         //]);
 
         // Routes:
@@ -36,7 +36,7 @@ class crpsServiceProvider extends ServiceProvider
         // $animal_pref = ['preference' => 'fav_animal', 'preference_label' => 'Favorite Animal', 'field_type' => 'text', 'default_value'=>'none'];
         // $test_pref = ['preference' => 'test_permission', 'preference_label' => 'Test Permission', 'field_type' => 'checkbox', 'default_value' => FALSE ];
         // $preferences_registry->register_preference($animal_pref);
-        // $preferences_registry->register_preference($test_pref);  
+        // $preferences_registry->register_preference($test_pref);
 
         $search_registry = app()->make('SearchRegistry');
         $subject_searcher = new SubjectSearchProvider;
@@ -53,13 +53,12 @@ class crpsServiceProvider extends ServiceProvider
     public function register()
     {
 
-        $this->app->singleton('SearchRegistry', function() {
+        $this->app->singleton('SearchRegistry', function () {
             return new \imonroe\crps\SearchRegistry;
         });
 
-        $this->app->singleton('ApplicationPreferencesRegistry', function() {
+        $this->app->singleton('ApplicationPreferencesRegistry', function () {
             return new \imonroe\crps\ApplicationPreferencesRegistry;
         });
-
     }
 }

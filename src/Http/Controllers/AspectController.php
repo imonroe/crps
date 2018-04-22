@@ -1,5 +1,6 @@
 <?php
 namespace imonroe\crps\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -20,10 +21,10 @@ class AspectController extends Controller
    *
    * @return void
    */
-  public function __construct()
-  {
-      $this->middleware('auth');
-  }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Display a listing of the resource.
@@ -70,24 +71,24 @@ class AspectController extends Controller
         // Before we do anything else, let's do any validation that is required.
         if ($request->hasFile('file_upload')) {
           // Set up the MIME types that we'll allow.
-          $allowed_mimes = new MimeUtils;
-          if (!empty($request->input('mime_type'))){
-            $allowed_mimes->allow( $request->input('mime_type') );
-          } else {
-            $allowed_mimes->allow_all();
-          }
-          $mime_string = 'mimes:' . $allowed_mimes->get_extensions('string');
+            $allowed_mimes = new MimeUtils;
+            if (!empty($request->input('mime_type'))) {
+                $allowed_mimes->allow($request->input('mime_type'));
+            } else {
+                $allowed_mimes->allow_all();
+            }
+            $mime_string = 'mimes:' . $allowed_mimes->get_extensions('string');
           // Add an additional parameter setting a max upload size of 50MB.
-          $file_valid = $mime_string . '|max:'.(1024 * 50);
-          $file_validator = Validator::make($request->all(), [
+            $file_valid = $mime_string . '|max:'.(1024 * 50);
+            $file_validator = Validator::make($request->all(), [
               'file_upload' => $file_valid,
-          ]);
+            ]);
 
-          if ($file_validator->fails()) {
-              return redirect( URL::previous() )
+            if ($file_validator->fails()) {
+                return redirect(URL::previous())
                           ->withErrors($file_validator)
                           ->withInput();
-          }
+            }
         }
 
         $aspect = AspectFactory::make_from_aspect_type($request->input('aspect_type'));
@@ -97,8 +98,8 @@ class AspectController extends Controller
         if (!is_null($aspect->notes_schema())) {
             $schema = json_decode($aspect->notes_schema(), true);
             $settings_array = array();
-            foreach ($schema as $key => $setting){
-                if ($request->exists('settings_'.$key) ) {
+            foreach ($schema as $key => $setting) {
+                if ($request->exists('settings_'.$key)) {
                     $settings_array[$key] = $request->input('settings_'.$key);
                 }
             }
@@ -177,24 +178,24 @@ class AspectController extends Controller
         // Before we do anything else, let's do any validation that is required.
         if ($request->hasFile('file_upload')) {
           // Set up the MIME types that we'll allow.
-          $allowed_mimes = new MimeUtils;
-          if (!empty($request->input('mime_type'))){
-            $allowed_mimes->allow( $request->input('mime_type') );
-          } else {
-            $allowed_mimes->allow_all();
-          }
-          $mime_string = 'mimes:' . $allowed_mimes->get_extensions('string');
+            $allowed_mimes = new MimeUtils;
+            if (!empty($request->input('mime_type'))) {
+                $allowed_mimes->allow($request->input('mime_type'));
+            } else {
+                $allowed_mimes->allow_all();
+            }
+            $mime_string = 'mimes:' . $allowed_mimes->get_extensions('string');
           // Add an additional parameter setting a max upload size of 50MB.
-          $file_valid = $mime_string . '|max:'.(1024 * 50);
-          $file_validator = Validator::make($request->all(), [
+            $file_valid = $mime_string . '|max:'.(1024 * 50);
+            $file_validator = Validator::make($request->all(), [
               'file_upload' => $file_valid,
-          ]);
+            ]);
 
-          if ($file_validator->fails()) {
-              return redirect( URL::previous() )
+            if ($file_validator->fails()) {
+                return redirect(URL::previous())
                           ->withErrors($file_validator)
                           ->withInput();
-          }
+            }
         }
 
         // fire pre-update if available
@@ -211,9 +212,9 @@ class AspectController extends Controller
         $schema_array = json_decode($aspect->notes_schema(), true);
         // iterate through each of the settings called for in the schema, and set it if it's in the request.
         if (is_array($schema_array)) {
-            foreach ($schema_array as $key => $setting){
+            foreach ($schema_array as $key => $setting) {
                 $setting = 'settings_'.$key;
-                if (!empty($request_array[$setting]) ) {
+                if (!empty($request_array[$setting])) {
                     $settings_array[$key] = $request_array[$setting];
                 } else {
                     $settings_array[$key] = '';

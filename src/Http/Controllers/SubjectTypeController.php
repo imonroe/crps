@@ -1,6 +1,7 @@
 <?php
 
 namespace imonroe\crps\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,10 +18,10 @@ class SubjectTypeController extends Controller
    *
    * @return void
    */
-  public function __construct()
-  {
-      $this->middleware('auth');
-  }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Display a listing of the resource.
@@ -60,11 +61,11 @@ class SubjectTypeController extends Controller
     public function store(Request $request)
     {
         /*
-        id	int(10) unsigned Auto Increment
-        type_name	varchar(191)
-        type_description	text NULL
-        aspect_group	int(11) NULL
-        parent_id	int(11) NULL
+        id  int(10) unsigned Auto Increment
+        type_name   varchar(191)
+        type_description    text NULL
+        aspect_group    int(11) NULL
+        parent_id   int(11) NULL
         */
 
         $type = new SubjectType;
@@ -76,7 +77,6 @@ class SubjectTypeController extends Controller
         $type->save();
         $request->session()->flash('message', 'Subject Type saved.');
         return redirect('/subject_type/'.$type->id);
-
     }
 
     /**
@@ -99,23 +99,23 @@ class SubjectTypeController extends Controller
         Here, we account for the special case of a subject having no Subject Type.
         In that case, we have a type id of -1, so we'll just handle that manually.
       */
-        if ( $id < 0 ){
-          $type_name = 'Codex';
-          $type_id = -1;
-          $type_description = '';
-          $all_subjects = Subject::where('subject_type', '=', '-1')->get();
-          $unfolded_subject_types = array();
+        if ($id < 0) {
+            $type_name = 'Codex';
+            $type_id = -1;
+            $type_description = '';
+            $all_subjects = Subject::where('subject_type', '=', '-1')->get();
+            $unfolded_subject_types = array();
         } else {
-          $type = SubjectType::find($id);
-          $type_name = $type->type_name;
-          $type_id = $type->id;
-          $type_description = $type->type_description;
-          $all_subjects = $type->get_all_subjects();
-          $unfolded_subject_types = $type->parent_subject_type_ids_array();
+            $type = SubjectType::find($id);
+            $type_name = $type->type_name;
+            $type_id = $type->id;
+            $type_description = $type->type_description;
+            $all_subjects = $type->get_all_subjects();
+            $unfolded_subject_types = $type->parent_subject_type_ids_array();
           //$unfolded_subject_types[] = $type_id;
-          if (count($unfolded_subject_types) > 1){
-              array_pop($unfolded_subject_types);
-          }
+            if (count($unfolded_subject_types) > 1) {
+                array_pop($unfolded_subject_types);
+            }
         }
 
         $codex = SubjectType::codex_array(false, true);
@@ -124,7 +124,8 @@ class SubjectTypeController extends Controller
         $paginate = new LengthAwarePaginator($all_subjects->forPage($page, $perPage), $all_subjects->count(), $perPage, $page, ['path'=>url('/subject_type/'.$id)]);
 
         return view(
-            'subject_type.show', [
+            'subject_type.show',
+            [
                                   'title'=>'Subject Type: '.$type_name,
                                   'type_name' => $type_name,
                                   'type_id' => $type_id,
@@ -147,7 +148,7 @@ class SubjectTypeController extends Controller
         $subject_type = SubjectType::findOrFail($id);
         // You can't be your own grandpa.
         $parents_options = SubjectType::options_list();
-        if (!empty($parents_options[$id]) ) {
+        if (!empty($parents_options[$id])) {
             unset($parents_options[$id]);
         }
 
@@ -194,9 +195,9 @@ class SubjectTypeController extends Controller
     {
         $type = SubjectType::findOrFail($id);
         $subjects_to_remove = $type->subjects();
-        foreach ($subjects_to_remove as $subject){
+        foreach ($subjects_to_remove as $subject) {
             $aspects_to_remove = $subject->aspects();
-            foreach ($aspects_to_remove as $aspect){
+            foreach ($aspects_to_remove as $aspect) {
                 $aspect->subjects()->detach();
                 $aspect->delete();
             }
@@ -210,20 +211,22 @@ class SubjectTypeController extends Controller
     /**
      *  AJAX friendly way of getting at the codex.
      */
-    public function ajax_list(Request $request, $id='-1'){
+    public function ajax_list(Request $request, $id = '-1')
+    {
         $st = new SubjectType;
-        $codex = $st->codex_array( $filter_id=false, $include_root=true, $include_subjects=false );
+        $codex = $st->codex_array($filter_id = false, $include_root = true, $include_subjects = false);
         return response()->json($codex);
     }
 
     /**
-     * 
+     *
      */
-    public function ajax_subject_list(Request $request, $subject_type_id){
+    public function ajax_subject_list(Request $request, $subject_type_id)
+    {
         $subjects = Subject::where([
             ['subject_type', '=', $subject_type_id],
             ['hidden', '=', '0'],
-        ])->orderBy('name')->get(); 
+        ])->orderBy('name')->get();
         return response()->json($subjects);
     }
 }

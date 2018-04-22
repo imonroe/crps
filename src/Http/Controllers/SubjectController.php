@@ -6,6 +6,7 @@ $request->session()->flash('error', 'Something went wrong!');
 */
 
 namespace imonroe\crps\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use imonroe\crps\Http\Controllers\SearchController;
 use imonroe\crps\Subject;
@@ -49,16 +50,16 @@ class SubjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($subject_type_id=null)
+    public function create($subject_type_id = null)
     {
 
         $subject_types = htmlspecialchars(json_encode(SubjectType::codex_array(false, true)));
-        if (!empty($subject_types) && $subject_type_id > -1){
+        if (!empty($subject_types) && $subject_type_id > -1) {
           // we'll need a little information about the subject type.
-          $st = SubjectType::find($subject_type_id);
-          $currently_selected_type = htmlspecialchars( json_encode( $st->parent_subject_type_ids_array() ) );
+            $st = SubjectType::find($subject_type_id);
+            $currently_selected_type = htmlspecialchars(json_encode($st->parent_subject_type_ids_array()));
         } else {
-          $currently_selected_type = htmlspecialchars(json_encode(array("")));
+            $currently_selected_type = htmlspecialchars(json_encode(array("")));
         }
 
         $form = '';
@@ -112,7 +113,6 @@ class SubjectController extends Controller
         } else {
             return redirect('/errors/404');
         }
-
     }
 
     /**
@@ -125,7 +125,7 @@ class SubjectController extends Controller
     {
         Validator::make($request->all(), [
           'name' => Rule::unique('subjects')->where(function ($query) {
-              return $query->where( 'user', Auth::id() );
+              return $query->where('user', Auth::id());
           }),
         ])->validate();
 
@@ -170,15 +170,15 @@ class SubjectController extends Controller
         // If we have a description, we'll treat it like Markdown and pass it to the template.
         $description = '<p>' . $subject->description . '</p>';
 
-        return view('subject.show', ['subject'=>$subject, 'description' => $description,  ] );
+        return view('subject.show', ['subject'=>$subject, 'description' => $description,  ]);
     }
 
-  	public function coldreader_homepage()
-  	{
-  		$subject = Subject::where('name', '=', 'Dashboard')->first();
-      return $this->show($subject->id);
+    public function coldreader_homepage()
+    {
+        $subject = Subject::where('name', '=', 'Dashboard')->first();
+        return $this->show($subject->id);
        //return view('subject.show', ['subject'=>$subject]);
-  	}
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -191,11 +191,11 @@ class SubjectController extends Controller
         $subject = Subject::findOrFail($id);
         // We need subject type information.
         $subject_types = htmlspecialchars(json_encode(SubjectType::codex_array(false, true)));
-        if ( $subject->subject_type > 0 ){
-          $st = SubjectType::find( $subject->subject_type );
-          $currently_selected_type = htmlspecialchars( json_encode( $st->parent_subject_type_ids_array() ) );
+        if ($subject->subject_type > 0) {
+            $st = SubjectType::find($subject->subject_type);
+            $currently_selected_type = htmlspecialchars(json_encode($st->parent_subject_type_ids_array()));
         } else {
-          $currently_selected_type = htmlspecialchars(json_encode(array("")));
+            $currently_selected_type = htmlspecialchars(json_encode(array("")));
         }
 
         $form = '';
@@ -239,10 +239,10 @@ class SubjectController extends Controller
     {
         $new_subject = Subject::findOrFail($id);
         $subject_type = $new_subject->subject_type();
-        $subject_type_id = ( $subject_type ) ? $subject_type->id : '-1'; 
+        $subject_type_id = ( $subject_type ) ? $subject_type->id : '-1';
         //dd($new_subject->aspects()->get());
-        foreach ($new_subject->aspects()->get() as $a){
-          $a->delete();
+        foreach ($new_subject->aspects()->get() as $a) {
+            $a->delete();
         }
         $new_subject->delete();
         $request->session()->flash('message', 'Subject deleted.');
@@ -255,7 +255,7 @@ class SubjectController extends Controller
         $a_json = array();
         $a_json_row = array();
         $candidates = Subject::where('name', 'like', $term)->orderBy('name')->get();
-        foreach ($candidates as $row){
+        foreach ($candidates as $row) {
             $a_json_row["id"] = $row->id;
             $a_json_row["value"] = $row->name;
             $a_json_row["label"] = $row->name;
@@ -264,14 +264,14 @@ class SubjectController extends Controller
         return response()->json($a_json);
     }
 
-    public static function get_codex_array($subject_id = null){
-      if ($subject_id){
-        $subject = Subject::findOrFail($subject_id);
-        $output = $subject->directory_array();
-      } else {
-        $output = Subject::codex_array();
-      }
-      return $output;
+    public static function get_codex_array($subject_id = null)
+    {
+        if ($subject_id) {
+            $subject = Subject::findOrFail($subject_id);
+            $output = $subject->directory_array();
+        } else {
+            $output = Subject::codex_array();
+        }
+        return $output;
     }
-
 }

@@ -39,25 +39,27 @@ class Aspect extends Model implements HasMediaConversions
         //$this->aspect_notes = $this->notes_schema();
     }
 
-    // Make sure we use a global scope, to ensure we only see our
-    // own data.
-    // https://laravel.com/docs/5.5/eloquent#collections
+    /**
+     * Make sure we use a global scope, to ensure we only see our own data.
+     */ 
     protected static function boot()
     {
         parent::boot();
         static::addGlobalScope(new UserScope);
     }
 
-    // We are using the Spatie MediaLibrary to handle file uploads.
-    // Here, we register a conversion that will create a thumbnail version
-    // of anything that's uploaded to the 'images' collection.
+    /**
+     * We are using the Spatie MediaLibrary to handle file uploads.
+     * Here, we register a conversion that will create a thumbnail version
+     * of anything that's uploaded to the 'images' collection.
+     */ 
     public function registerMediaConversions(Media $media = null)
-   {
-       $this->addMediaConversion('thumb')
+    {
+        $this->addMediaConversion('thumb')
              ->width(368)
              ->height(232)
              ->performOnCollections('images');
-   }
+    }
 
     /**
     * If you want to save metadata fields for this array, just set up the schema
@@ -71,14 +73,15 @@ class Aspect extends Model implements HasMediaConversions
         return null;
     }
 
-    /*
-      It's more convenient to work with the aspect_notes metadata as a PHP array,
-      even though we store it as JSON.
-      Here, we include a convenience method to let us just snag it as an array.
-      @returns Array
-    */
-    public function get_aspect_notes_array(){
-      return (array) json_decode($this->aspect_notes);
+    /**
+     * It's more convenient to work with the aspect_notes metadata as a PHP array,
+     * even though we store it as JSON.
+     * Here, we include a convenience method to let us just snag it as an array.
+     * @returns Array
+     */
+    public function get_aspect_notes_array()
+    {
+        return (array) json_decode($this->aspect_notes);
     }
 
     public function isSubclass()
@@ -90,7 +93,9 @@ class Aspect extends Model implements HasMediaConversions
         }
     }
 
-    // override the base Model function
+    /**
+     * override the base Model function
+     */
     public function newFromBuilder($attributes = array(), $connection = null)
     {
         $aspect_type = $attributes->aspect_type;
@@ -119,16 +124,16 @@ class Aspect extends Model implements HasMediaConversions
     }
 
 
-    /*
-      MANUAL LOAD IMPORTANT INFORMATION:
-      If you add new columns to the Aspect table (via migration, etc.)
-      You must ensure that the new columns are reflected in the manual_load
-      function, or they will not be available on your model.
-
-      Remember, we are building custom collections of overridded aspects,
-      and to support that, we have to load the data ourselves.  This is a feature,
-      not a bug.
-    */
+    /** 
+     * MANUAL LOAD IMPORTANT INFORMATION:
+     * If you add new columns to the Aspect table (via migration, etc.)
+     * You must ensure that the new columns are reflected in the manual_load
+     * function, or they will not be available on your model.
+     * 
+     * Remember, we are building custom collections of overridded aspects,
+     * and to support that, we have to load the data ourselves.  This is a feature,
+     * not a bug.
+     */
     public function manual_load()
     {
         // We anticipate here that we have an empty model, with just the ID set.
@@ -192,25 +197,26 @@ class Aspect extends Model implements HasMediaConversions
         return $output;
     }
 
-    public function create_form($subject_id, $aspect_type_id = null){
-      $form = \BootForm::horizontal(['url' => '/aspect/create', 'method' => 'post', 'files' => true]);
-      $form .= \BootForm::hidden('subject_id', $subject_id);
-      $form .= \BootForm::hidden('media_collection', 'uploads');
-      if (!is_null($aspect_type_id)) {
-          $form .= \BootForm::hidden('aspect_type', $aspect_type_id);
-      } else {
-          $form .= \BootForm::select('aspect_type', AspectType::get_options_array());
-          $form .= ' (<a href="/aspect_type/create">Add a new Aspect Type</a>)';
-      }
-      $form .= \BootForm::text('title', 'Title');
-      $form .= \BootForm::textarea('aspect_data', 'Aspect Data');
-      $form .= \BootForm::text('aspect_source');
-      $form .= \BootForm::checkbox('hidden', 'Hidden?');
-      $form .= \BootForm::file('file_upload');
-      $form .= $this->notes_fields();
-      $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
-      $form .= \BootForm::close();
-      return $form;
+    public function create_form($subject_id, $aspect_type_id = null)
+    {
+        $form = \BootForm::horizontal(['url' => '/aspect/create', 'method' => 'post', 'files' => true]);
+        $form .= \BootForm::hidden('subject_id', $subject_id);
+        $form .= \BootForm::hidden('media_collection', 'uploads');
+        if (!is_null($aspect_type_id)) {
+            $form .= \BootForm::hidden('aspect_type', $aspect_type_id);
+        } else {
+            $form .= \BootForm::select('aspect_type', AspectType::get_options_array());
+            $form .= ' (<a href="/aspect_type/create">Add a new Aspect Type</a>)';
+        }
+        $form .= \BootForm::text('title', 'Title');
+        $form .= \BootForm::textarea('aspect_data', 'Aspect Data');
+        $form .= \BootForm::text('aspect_source');
+        $form .= \BootForm::checkbox('hidden', 'Hidden?');
+        $form .= \BootForm::file('file_upload');
+        $form .= $this->notes_fields();
+        $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
+        $form .= \BootForm::close();
+        return $form;
     }
 
     public function edit_form($id)
@@ -263,11 +269,10 @@ class Aspect extends Model implements HasMediaConversions
     }
 
     /*
-	   Below, we're going to prototype some pre- and post-save hooks that can be overridden by child
-	   classes, such that we can do some manipulations on the data before we save it if we want.
-	   They get called in the AspectController in the relevant places.
-    */
-
+     *  Below, we're going to prototype some pre- and post-save hooks that can be overridden by child
+     *  classes, such that we can do some manipulations on the data before we save it if we want.
+     *  They get called in the AspectController in the relevant places.
+     */
     public function pre_save(Request &$request)
     {
         return false;
@@ -289,17 +294,17 @@ class Aspect extends Model implements HasMediaConversions
         return false;
     }
 
-    public function can_edit(){
-      return (bool)$this->editable;
+    public function can_edit()
+    {
+        return (bool)$this->editable;
     }
-
 } // End of base Aspect Class.
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
-	Below, you'll find supplementary classes to make Aspects work correctly within Eloquent ORM
-	We want a custom Collction object that will correctly instantiate custom aspect classes
-	We also want a factory to pump out aspects of various types.
+    Below, you'll find supplementary classes to make Aspects work correctly within Eloquent ORM
+    We want a custom Collction object that will correctly instantiate custom aspect classes
+    We also want a factory to pump out aspects of various types.
 */
 class AspectCollection extends \Illuminate\Database\Eloquent\Collection
 {

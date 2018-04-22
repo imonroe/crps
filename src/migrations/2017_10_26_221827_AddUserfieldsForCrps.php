@@ -14,18 +14,17 @@ class AddUserfieldsForCrps extends Migration
     public function up()
     {
 
-      if (Schema::hasTable('aspects')) {
-        Schema::table('aspects', function (Blueprint $table) {
-            $table->integer('user');
-        });
-      }
+        if (Schema::hasTable('aspects')) {
+            Schema::table('aspects', function (Blueprint $table) {
+                $table->integer('user');
+            });
+        }
 
-      if (Schema::hasTable('subjects')) {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->integer('user');
-        });
-      }
-
+        if (Schema::hasTable('subjects')) {
+            Schema::table('subjects', function (Blueprint $table) {
+                $table->integer('user');
+            });
+        }
     }
 
     /**
@@ -36,13 +35,12 @@ class AddUserfieldsForCrps extends Migration
     public function down()
     {
 
-      Schema::table('aspects', function (Blueprint $table) {
-        $table->dropColumn('user');
-      });
+        Schema::table('aspects', function (Blueprint $table) {
+            $table->dropColumn('user');
+        });
 
-      Schema::table('subjects', function (Blueprint $table) {
-        $table->dropColumn('user');
-      });
-
+        Schema::table('subjects', function (Blueprint $table) {
+            $table->dropColumn('user');
+        });
     }
 }

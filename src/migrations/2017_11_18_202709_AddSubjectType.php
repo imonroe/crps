@@ -13,9 +13,10 @@ class AddSubjectType extends Migration
      */
     public function up()
     {
-        if (!(Schema::hasTable('subject_types')) ) {
+        if (!(Schema::hasTable('subject_types'))) {
             Schema::create(
-                'subject_types', function (Blueprint $t) {
+                'subject_types',
+                function (Blueprint $t) {
                     $t->increments('id');
                     $t->string('type_name');
                     $t->text('type_description')->nullable();
@@ -28,12 +29,10 @@ class AddSubjectType extends Migration
 
 
         if (Schema::hasTable('subjects')) {
-          Schema::table('subjects', function (Blueprint $table) {
-              $table->integer('subject_type')->default(-1);
-          });
+            Schema::table('subjects', function (Blueprint $table) {
+                $table->integer('subject_type')->default(-1);
+            });
         }
-
-
     }
 
     /**
@@ -47,9 +46,9 @@ class AddSubjectType extends Migration
         Schema::drop('subject_types');
 
         if (Schema::hasTable('subjects')) {
-          Schema::table('subjects', function (Blueprint $table) {
-              $table->dropColumn('subject_type');
-          });
+            Schema::table('subjects', function (Blueprint $table) {
+                $table->dropColumn('subject_type');
+            });
         }
     }
 }

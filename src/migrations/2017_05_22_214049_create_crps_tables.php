@@ -15,9 +15,10 @@ class CreateCrpsTables extends Migration
     {
         // Main Tables
 
-        if (!(Schema::hasTable('aspects')) ) {
+        if (!(Schema::hasTable('aspects'))) {
             Schema::create(
-                'aspects', function (Blueprint $t) {
+                'aspects',
+                function (Blueprint $t) {
                     $t->increments('id');
                     $t->integer('aspect_type');
                     $t->text('title')->nullable();
@@ -33,9 +34,10 @@ class CreateCrpsTables extends Migration
             );
         }
 
-        if (!(Schema::hasTable('aspect_subject')) ) {
+        if (!(Schema::hasTable('aspect_subject'))) {
             Schema::create(
-                'aspect_subject', function (Blueprint $t) {
+                'aspect_subject',
+                function (Blueprint $t) {
                     $t->increments('id');
                     $t->integer('aspect_id');
                     $t->integer('subject_id');
@@ -44,9 +46,10 @@ class CreateCrpsTables extends Migration
             );
         }
 
-        if (!(Schema::hasTable('aspect_types')) ) {
+        if (!(Schema::hasTable('aspect_types'))) {
             Schema::create(
-                'aspect_types', function (Blueprint $t) {
+                'aspect_types',
+                function (Blueprint $t) {
                     $t->increments('id');
                     $t->string('aspect_name');
                     $t->text('aspect_description')->nullable();
@@ -56,9 +59,10 @@ class CreateCrpsTables extends Migration
             );
         }
 
-        if (!(Schema::hasTable('subjects')) ) {
+        if (!(Schema::hasTable('subjects'))) {
             Schema::create(
-                'subjects', function (Blueprint $t) {
+                'subjects',
+                function (Blueprint $t) {
                     $t->increments('id');
                     $t->string('name');
                     $t->integer('parent_id')->default(-1);
@@ -67,7 +71,6 @@ class CreateCrpsTables extends Migration
                 }
             );
         }
-
     }
 
     /**
@@ -82,5 +85,4 @@ class CreateCrpsTables extends Migration
         Schema::drop('aspect_subjects');
         Schema::drop('aspect_types');
     }
-
 }

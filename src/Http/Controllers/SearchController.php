@@ -1,6 +1,7 @@
 <?php
 
 namespace imonroe\crps\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -16,13 +17,13 @@ class SearchController extends Controller
    *
    * @return void
    */
-  public function __construct()
-  {
-      $this->middleware('auth');
-  }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /*
-    *	The basic web search pulls results from DuckDuckGo to try to provide an abstract on a search subject.
+    *   The basic web search pulls results from DuckDuckGo to try to provide an abstract on a search subject.
     */
     public function web_search($query)
     {
@@ -42,13 +43,13 @@ class SearchController extends Controller
         return $output;
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
       // make a basic search page.
-
     }
 
     /*
-    *	The controller function to get all the pieces and generate the view.
+    *   The controller function to get all the pieces and generate the view.
     */
     public function show_search_results(Request $request)
     {
@@ -56,7 +57,8 @@ class SearchController extends Controller
         $search_registry = app()->make('SearchRegistry');
         $search_results = $search_registry->search($query);
         return view(
-            'search.results', ['title'=>'Search Results for: '.$query, 'results_markup' => $search_results, ]
+            'search.results',
+            ['title'=>'Search Results for: '.$query, 'results_markup' => $search_results, ]
         );
     }
 
@@ -64,5 +66,4 @@ class SearchController extends Controller
     {
         return Subject::where('name', 'LIKE', '%'.$query.'%')->get();
     }
-
 }

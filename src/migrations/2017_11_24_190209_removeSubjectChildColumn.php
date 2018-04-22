@@ -13,11 +13,11 @@ class RemoveSubjectChildColumn extends Migration
      */
     public function up()
     {
-      if (Schema::hasTable('subjects')) {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->dropColumn('parent_id');
-        });
-      }
+        if (Schema::hasTable('subjects')) {
+            Schema::table('subjects', function (Blueprint $table) {
+                $table->dropColumn('parent_id');
+            });
+        }
     }
 
     /**

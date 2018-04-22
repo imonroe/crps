@@ -18,14 +18,15 @@ class AspectType extends Model
      * permitted to display for the current user.
      */
 
-    public function check_preference(){
+    public function check_preference()
+    {
         $permitted = true;
-        if ( !empty($this->preference_name) ){
+        if (!empty($this->preference_name)) {
             // only check if there is a preference value set.
             $user_preferences_controller = new UserPreferencesController;
             $user_prefs = $user_preferences_controller->get_user_prefs();
-            if ( (bool) $user_prefs[$this->preference_name] != TRUE){
-                $permitted = FALSE;
+            if ((bool) $user_prefs[$this->preference_name] != true) {
+                $permitted = false;
             }
         }
         return $permitted;
@@ -35,28 +36,28 @@ class AspectType extends Model
     This function generates an array that can be used as a drop-down list of
     AspectTypes to use in forms, etc.
     */
-    public static function get_options_array($format='')
+    public static function get_options_array($format = '')
     {
         $all_types = AspectType::all();
         //$output = array('-1' => 'None');
-        if ($format == 'json'){
+        if ($format == 'json') {
           // We want the output in JSON format
-          foreach ($all_types as $t) {
-              if ( $t->is_viewable && $t->check_preference() ) {
-                  $output[] = [
+            foreach ($all_types as $t) {
+                if ($t->is_viewable && $t->check_preference()) {
+                    $output[] = [
                     'value' => $t->id,
                     'label' => $t->aspect_name,
-                  ];
-              }
-          }
-          $output = json_encode($output);
+                    ];
+                }
+            }
+            $output = json_encode($output);
         } else {
           // We want the output as a PHP array.
-          foreach ($all_types as $t) {
-              if ( $t->is_viewable  && $t->check_preference() ) {
-                  $output[$t->id] = $t->aspect_name;
-              }
-          }
+            foreach ($all_types as $t) {
+                if ($t->is_viewable  && $t->check_preference()) {
+                    $output[$t->id] = $t->aspect_name;
+                }
+            }
         }
         return $output;
     }
