@@ -59,11 +59,10 @@ class SubjectType extends Model
         }
     }
 
-    public static function get_options_array()
+    public static function options_list()
     {
-        $output = array();
-        $unsorted = SubjectType::all();
-        $all_types = $unsorted->sortBy('type_name');
+        $all_types = SubjectType::all();
+        $output = array('-1' => 'None');
         foreach ($all_types as $t) {
             $output[$t->id] = $t->type_name;
         }
