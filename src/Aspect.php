@@ -155,6 +155,7 @@ class Aspect extends Model implements HasMediaConversions
             $this->folded = $a_data->folded;
             $this->user = $a_data->user;
             $this->editable = $a_data->editable;
+            $this->size = $a_data->size;
         }
     }
 

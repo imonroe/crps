@@ -2,7 +2,7 @@
 
 CRPS is the Coldreader Persistent Storage system. On its own, you may not find it very useful; it doesn't have any front-end information in it at all.  For a working, real-world implementation, please [install the full Coldreader project.](https://github.com/imonroe/coldreader)
 
-CRPS is designed to be a databasing system for when you don't know in advance what kind of information you want to store.  It implments a data model where you have a bunch of arbitrary subjects, each of which has an arbitrary number of Aspects.  
+CRPS is designed to be a databasing system for when you don't know in advance what kind of information you want to store.  It implments a data model where you have a bunch of arbitrary subjects, each of which has an arbitrary number of Aspects.
 
 Aspects can be thought of as some kind of fact or content that is relevant to its Subject.  Aspect data is stored in the database as text, in the broad sense. JSON counts as text, for instance, as do hyperlinks, markup, etc.  In addition to storing data, Aspects can be purely functional--a call to an external API, a web scraper to grab a bit of content from elsewhere, and so forth.  Each type of Aspect has a display method that produces the markup for use in templates.  Additionally, each type of Aspect also has a parse() function which can be called automatically by scheduled jobs.  From this function, an Aspect may perform actions on the data model; fetching new data from an external source, updating its own value, or creating/updating other Subjects or Aspects.
 
