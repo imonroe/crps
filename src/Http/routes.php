@@ -66,12 +66,18 @@ Route::namespace('imonroe\crps\Http\Controllers')->group(
                 Route::get('/aspect/{id}/delete', 'AspectController@destroy');  // delete aspect form handler
 
                 Route::post('/aspect/{id}/fold', function ($id, Request $request) {
-                    $aspect = Aspect::find($id);
+                    $aspect = Aspect::findOrFail($id);
                     if ($aspect->folded) {
                         $aspect->folded = 0;
                     } else {
                         $aspect->folded = 1;
                     }
+                    $aspect->update_aspect();
+                });
+
+                Route::post('/aspect/{id}/resize', function ($id, Request $request) {
+                    $aspect = Aspect::findOrFail($id);
+                    $aspect->size = $request->input('size');
                     $aspect->update_aspect();
                 });
 
