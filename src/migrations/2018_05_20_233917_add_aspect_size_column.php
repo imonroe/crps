@@ -27,7 +27,7 @@ class AddAspectSizeColumn extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('aspects', 'size')){
+        if (Schema::hasColumn('aspects', 'size')) {
             Schema::table('aspects', function (Blueprint $table) {
                 $table->dropColumn('size');
             });

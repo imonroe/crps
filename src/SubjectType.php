@@ -12,7 +12,7 @@ class SubjectType extends Model
 
     /**
      * Make sure we use a global scope, to ensure we only see our own data.
-     */ 
+     */
     protected static function boot()
     {
         parent::boot();
@@ -134,9 +134,9 @@ class SubjectType extends Model
         return $codex;
     }
 
-    /** 
-     * Returns an array of itself and its children, called recursively. 
-     * This function is used by codex_array() to build the full list of subjects. 
+    /**
+     * Returns an array of itself and its children, called recursively.
+     * This function is used by codex_array() to build the full list of subjects.
      */
     public function directory_array($filter_id = false, $include_subjects = false)
     {

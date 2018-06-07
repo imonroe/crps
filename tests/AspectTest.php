@@ -14,13 +14,15 @@ class AspectTest extends TestCase
 
     protected $test_aspect;
 
-    protected function setUp(){
+    protected function setUp()
+    {
         parent::setUp();
         //Artisan::call('migrate');
         $this->test_aspect = new Aspect;
     }
 
-    protected function tearDown(){
+    protected function tearDown()
+    {
         //Artisan::call('migrate:reset');
         parent::tearDown();
     }
@@ -58,6 +60,4 @@ class AspectTest extends TestCase
         $this->assertTrue(is_numeric(strtotime($loaded_aspect->updated_at)));
 
     }
-
-
 }

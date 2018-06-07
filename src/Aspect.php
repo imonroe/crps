@@ -41,7 +41,7 @@ class Aspect extends Model implements HasMediaConversions
 
     /**
      * Make sure we use a global scope, to ensure we only see our own data.
-     */ 
+     */
     protected static function boot()
     {
         parent::boot();
@@ -52,7 +52,7 @@ class Aspect extends Model implements HasMediaConversions
      * We are using the Spatie MediaLibrary to handle file uploads.
      * Here, we register a conversion that will create a thumbnail version
      * of anything that's uploaded to the 'images' collection.
-     */ 
+     */
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')
@@ -124,12 +124,12 @@ class Aspect extends Model implements HasMediaConversions
     }
 
 
-    /** 
+    /**
      * MANUAL LOAD IMPORTANT INFORMATION:
      * If you add new columns to the Aspect table (via migration, etc.)
      * You must ensure that the new columns are reflected in the manual_load
      * function, or they will not be available on your model.
-     * 
+     *
      * Remember, we are building custom collections of overridded aspects,
      * and to support that, we have to load the data ourselves.  This is a feature,
      * not a bug.
