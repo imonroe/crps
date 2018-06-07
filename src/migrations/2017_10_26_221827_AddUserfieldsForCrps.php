@@ -16,13 +16,13 @@ class AddUserfieldsForCrps extends Migration
 
         if (Schema::hasTable('aspects')) {
             Schema::table('aspects', function (Blueprint $table) {
-                $table->integer('user');
+                $table->integer('user')->default(-1);
             });
         }
 
         if (Schema::hasTable('subjects')) {
             Schema::table('subjects', function (Blueprint $table) {
-                $table->integer('user');
+                $table->integer('user')->default(-1);
             });
         }
     }

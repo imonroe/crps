@@ -222,14 +222,13 @@ class Aspect extends Model implements HasMediaConversions
 
     public function edit_form($id)
     {
-        $aspect = Aspect::find($id);
-        $form = \BootForm::horizontal(['url' => '/aspect/'.$id.'/edit', 'method' => 'post', 'files' => true]);
-        $form .= \BootForm::hidden('aspect_id', $aspect->id);
-        $form .= \BootForm::hidden('aspect_type', $aspect->aspect_type()->id);
-        $form .= \BootForm::text('title', 'Title', $aspect->title);
-        $form .= \BootForm::textarea('aspect_data', 'Aspect Data', $aspect->aspect_data);
-        $form .= \BootForm::text('aspect_source', 'Source', $aspect->aspect_source);
-        $form .= \BootForm::checkbox('hidden', 'Hidden?', $aspect->hidden);
+        $form = \BootForm::horizontal(['url' => '/aspect/'.$this->id.'/edit', 'method' => 'post', 'files' => true]);
+        $form .= \BootForm::hidden('aspect_id', $this->id);
+        $form .= \BootForm::hidden('aspect_type', $this->aspect_type()->id);
+        $form .= \BootForm::text('title', 'Title', $this->title);
+        $form .= \BootForm::textarea('aspect_data', 'Aspect Data', $this->aspect_data);
+        $form .= \BootForm::text('aspect_source', 'Source', $this->aspect_source);
+        $form .= \BootForm::checkbox('hidden', 'Hidden?', $this->hidden);
         $form .= \BootForm::file('file_upload');
         $form .= $this->notes_fields();
         $form .= \BootForm::submit('Submit', ['class' => 'btn btn-primary']);
@@ -334,13 +333,15 @@ class AspectFactory
         // Lets try to get an aspect_type name to use for a class.
         $new_classname = 'App\DefaultAspect';  // <--- if we don't have a custom type, we'll use this as our default.
         $new_type_name = DB::select('SELECT aspect_name FROM aspect_types where id IN (SELECT aspect_type FROM aspects where id = :id) LIMIT 1', ['id' => $aspect_id]);
-        $mutated_aspect_type = $new_type_name[0]->aspect_name;
+        $mutated_aspect_type = !empty($new_type_name[0]->aspect_name) ? $new_type_name[0]->aspect_name : 'Null';
         $classname = Ana::code_safe_name($mutated_aspect_type);
         $classname = $classname . 'Aspect';
         if (class_exists($classname)) {
             $new_classname = $classname;
         } elseif (class_exists('\App\\'.$classname)) {
             $new_classname = '\App\\' . $classname;
+        } else {
+            $new_classname = '\App\\DefaultAspect';
         }
         $finder = new $new_classname();
         $finder->id = $aspect_id;
