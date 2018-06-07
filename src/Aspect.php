@@ -220,7 +220,7 @@ class Aspect extends Model implements HasMediaConversions
         return $form;
     }
 
-    public function edit_form($id)
+    public function edit_form()
     {
         $form = \BootForm::horizontal(['url' => '/aspect/'.$this->id.'/edit', 'method' => 'post', 'files' => true]);
         $form .= \BootForm::hidden('aspect_id', $this->id);
