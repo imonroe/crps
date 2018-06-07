@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class AspectControllerTest extends TestCase
 {
 
-    use DatabaseMigrations;
+    use RefreshDatabase;
     /**
      * A basic test example.
      *
