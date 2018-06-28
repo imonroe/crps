@@ -70,7 +70,8 @@ class Aspect extends Model implements HasMediaConversions
     */
     public function notes_schema()
     {
-        return null;
+        $empty_array = [];
+        return json_encode($empty_array);
     }
 
     /**
